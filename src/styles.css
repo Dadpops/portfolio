@@ -382,6 +382,9 @@ section { scroll-margin-top: 84px; }
  * Modal
  * =========================================================================== */
 .modal-root { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; padding: clamp(12px, 4vw, 40px); }
+/* The author `display:grid` above would otherwise override the UA `[hidden]{display:none}`,
+   leaving the backdrop covering the page at all times. Re-assert hidden (higher specificity). */
+.modal-root[hidden] { display: none; }
 .modal-backdrop { position: absolute; inset: 0; background: rgba(4,7,11,0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: fade 0.25s var(--ease); }
 .modal {
   position: relative; z-index: 1; width: min(920px, 100%); max-height: 88vh; overflow-y: auto;
