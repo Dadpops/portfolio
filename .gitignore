@@ -1,0 +1,21 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# Node (only if you ever add a dev dependency like `serve`)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs / temp
+*.log
+.cache/
+
+# Internal scaffolding — not part of the published portfolio
+PORTFOLIO_BUILD_PROMPT.md
+.claude/
+HANDOFF.md

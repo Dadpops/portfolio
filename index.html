@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kit Cabena — Product &amp; Engineering, read two ways</title>
+
+  <meta name="description" content="Kit Cabena's portfolio. Every project reads two ways: flip a card between the Product story and the Technical build. Bridging product and engineering — deep and creative." />
+  <meta name="author" content="Kit Cabena" />
+  <meta name="theme-color" content="#0d1117" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Kit Cabena — Product &amp; Engineering, read two ways" />
+  <meta property="og:description" content="Every project flips between a Product story and a Technical build. I bridge product and engineering — technically deep and creative." />
+  <meta property="og:image" content="assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kit Cabena — Product &amp; Engineering, read two ways" />
+  <meta name="twitter:description" content="Every project flips between a Product story and a Technical build." />
+  <meta name="twitter:image" content="assets/og.png" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts: engineered grotesque display, clean sans body, mono for the technical layer -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="src/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#work">Skip to work</a>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="site-header" id="top">
+    <div class="wrap header-inner">
+      <a class="logo" href="#top" aria-label="Kit Cabena — home">
+        <span class="logo-mark" aria-hidden="true">KC</span>
+        <span class="logo-text">Kit Cabena</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#now">Building</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+    <section class="hero wrap" id="hero">
+      <p class="hero-eyebrow">Technical Support Engineer <span aria-hidden="true">→</span> Product Manager</p>
+      <h1 class="hero-title">
+        The work reads <span class="grad-product">two ways</span>.
+      </h1>
+      <p class="hero-lede">
+        I build at the seam between product and engineering. So does this page:
+        every project can be read as a <strong class="ink-product">Product story</strong>
+        — problem, decision, outcome — or flipped to the <strong class="ink-tech">Technical build</strong>
+        — architecture, stack, the hard calls. Same work, translated for whoever's reading.
+      </p>
+
+      <!-- Compact "how to read this" explainer -->
+      <div class="layer-explainer" role="note" aria-label="How to read the project cards">
+        <div class="layer-chip layer-chip--product">
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <span class="layer-chip-title">Product</span>
+            <span class="layer-chip-sub">for PMs &amp; recruiters</span>
+          </div>
+        </div>
+        <button class="layer-explainer-flip" type="button" aria-hidden="true" tabindex="-1">
+          <span class="flip-glyph">⇄</span> flip any card
+        </button>
+        <div class="layer-chip layer-chip--tech">
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <span class="layer-chip-title">Technical</span>
+            <span class="layer-chip-sub">for engineers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a class="btn btn--primary" href="#work">See the work</a>
+        <a class="btn btn--ghost" href="assets/kit-cabena-resume.pdf" download>
+          Download résumé <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Now building (live strip) ────────────────────────────────────── -->
+    <section class="now wrap" id="now" aria-labelledby="now-heading">
+      <div class="section-head">
+        <h2 id="now-heading" class="section-title">
+          <span class="pulse" aria-hidden="true"></span> Now building
+        </h2>
+        <p class="section-sub">Continuous output — a few things currently in motion.</p>
+      </div>
+      <div class="now-strip" id="now-strip" role="list">
+        <!-- rendered from projects.js (featured) -->
+      </div>
+    </section>
+
+    <!-- ── Selected work ────────────────────────────────────────────────── -->
+    <section class="work wrap" id="work" aria-labelledby="work-heading">
+      <div class="section-head">
+        <h2 id="work-heading" class="section-title">Selected work</h2>
+        <p class="section-sub">
+          Flip a card to switch audiences. Click a card to open the full story — both layers, side by side.
+        </p>
+      </div>
+
+      <div class="filters" id="filters" role="group" aria-label="Filter projects by tag">
+        <!-- filter buttons rendered from the union of project tags -->
+      </div>
+
+      <div class="grid" id="grid">
+        <!-- project cards rendered from projects.js -->
+      </div>
+      <p class="grid-empty" id="grid-empty" hidden>No projects match that filter.</p>
+    </section>
+
+    <!-- ── About ────────────────────────────────────────────────────────── -->
+    <section class="about wrap" id="about" aria-labelledby="about-heading">
+      <div class="section-head">
+        <h2 id="about-heading" class="section-title">About</h2>
+      </div>
+      <div class="about-body">
+        <p class="about-lede">
+          I'm Kit — I moved into product from the support-engineering trenches, and I
+          kept the parts that made me good there: I actually understand the systems,
+          and I'm relentless about the user's real problem.
+        </p>
+        <p>
+          For years as a Technical Support Engineer I lived where the product meets the
+          person using it — which turns out to be the best seat in the house for learning
+          what to build. I got tired of filing the same problems as tickets, so I started
+          shipping the fixes myself: internal tools, documentation pipelines, RAG
+          assistants. That builder habit never stopped. Nights and weekends it's games and
+          creative tools; day to day it's whatever removes friction for a real user.
+        </p>
+        <p>
+          What I'm after now is the product seat, explicitly. Not because I'm done being
+          technical — because being technical is my unfair advantage in it. I can talk to
+          engineers in their language and to customers in theirs, and I'd rather prove that
+          by building an artifact that reads correctly to both than by claiming it. That's
+          this page. <span class="about-note">(This copy is a first draft from my
+          background — Kit, edit freely.)</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ── Contact ──────────────────────────────────────────────────────── -->
+    <section class="contact wrap" id="contact" aria-labelledby="contact-heading">
+      <div class="contact-card">
+        <h2 id="contact-heading" class="section-title">Let's talk</h2>
+        <p class="contact-lede">
+          Building a product team, hiring, or just want to compare notes? The fastest way
+          to reach me is email — the rest is here for credibility.
+        </p>
+
+        <a class="btn btn--primary btn--lg contact-primary"
+           href="mailto:dadpopsdev@gmail.com?subject=Saw%20your%20portfolio&amp;body=Hi%20Kit%2C%0A%0A">
+          <span aria-hidden="true">✉</span> Email me
+        </a>
+
+        <div class="contact-links">
+          <a class="contact-link" id="link-github" href="#" target="_blank" rel="noopener noreferrer" data-ask="github">
+            <span class="contact-link-label">GitHub</span>
+            <span class="contact-link-hint" data-ask-hint>link TBD</span>
+          </a>
+          <a class="contact-link" id="link-linkedin" href="#" target="_blank" rel="noopener noreferrer" data-ask="linkedin">
+            <span class="contact-link-label">LinkedIn</span>
+            <span class="contact-link-hint" data-ask-hint>link TBD</span>
+          </a>
+          <a class="contact-link" href="assets/kit-cabena-resume.pdf" download>
+            <span class="contact-link-label">Résumé</span>
+            <span class="contact-link-hint">PDF ↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="footer-thesis">The work reads two ways. <span aria-hidden="true">⇄</span></p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="mailto:dadpopsdev@gmail.com">Email</a>
+        <a id="foot-github" href="#" target="_blank" rel="noopener noreferrer" data-ask="github">GitHub</a>
+        <a id="foot-linkedin" href="#" target="_blank" rel="noopener noreferrer" data-ask="linkedin">LinkedIn</a>
+        <a href="assets/kit-cabena-resume.pdf" download>Résumé</a>
+      </nav>
+      <p class="footer-fine">© <span id="year">2026</span> Kit Cabena · Built as a data-driven, one-commit-to-update site.</p>
+    </div>
+  </footer>
+
+  <!-- ── Project modal (single instance, populated on open) ───────────── -->
+  <div class="modal-root" id="modal-root" hidden>
+    <div class="modal-backdrop" data-close="backdrop"></div>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+      <button class="modal-close" type="button" data-close="button" aria-label="Close">✕</button>
+      <div class="modal-content" id="modal-content">
+        <!-- populated by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

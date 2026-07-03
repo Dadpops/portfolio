@@ -1,0 +1,449 @@
+/* =============================================================================
+ * app.js — render, flip, filter, modal.
+ *
+ * Everything visible in "Now building" and "Selected work" is generated here
+ * from projects.js. No project content is hand-written in the HTML.
+ * =========================================================================== */
+
+import { projects } from "./projects.js";
+
+/* ── tiny helpers ──────────────────────────────────────────────────────── */
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+/** Escape user/content strings before injecting as HTML. */
+function esc(str = "") {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+const prefersReducedMotion =
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ── smart link → { label, href, quiet, render } ───────────────────────── */
+function resolveLink(link) {
+  if (!link || link.type === "none") return null;
+  const url = (link.url || "").trim();
+  switch (link.type) {
+    case "demo":
+      return url ? { label: "Live demo ↗", href: url } : null;
+    case "repo":
+      return url ? { label: "View source ↗", href: url } : null;
+    case "prototype":
+      // quiet, non-navigating control; opening the modal is handled by card click
+      return { label: "Prototype", quiet: true, title: "Not yet public" };
+    default:
+      return null;
+  }
+}
+
+/** Build the primary smart-link button HTML for a card face (never a dead link). */
+function smartLinkHTML(project) {
+  const resolved = resolveLink(project.link);
+  if (!resolved) return ""; // type:"none" or missing url → render nothing
+  if (resolved.quiet) {
+    return `<span class="smart-link smart-link--quiet" title="${esc(resolved.title)}">
+              🔒 ${esc(resolved.label)}
+            </span>`;
+  }
+  return `<a class="smart-link" href="${esc(resolved.href)}" target="_blank"
+             rel="noopener noreferrer" data-stop>
+            ${esc(resolved.label)}
+          </a>`;
+}
+
+/* ── screenshot or graceful placeholder ────────────────────────────────── */
+function shotHTML(project) {
+  if (project.screenshot) {
+    return `<img src="${esc(project.screenshot)}"
+                 alt="${esc(project.screenshotAlt || project.name + " screenshot")}"
+                 loading="lazy" width="1600" height="1000"
+                 onerror="this.replaceWith(makePlaceholder('${esc(project.name)}'))" />`;
+  }
+  return placeholderMarkup(project.name);
+}
+function placeholderMarkup(name) {
+  return `<div class="shot-placeholder"><span>${esc(name)}<small>screenshot soon</small></span></div>`;
+}
+// used by the <img onerror> fallback so a broken/absent file still looks intentional
+window.makePlaceholder = function (name) {
+  const div = document.createElement("div");
+  div.className = "shot-placeholder";
+  div.innerHTML = `<span>${esc(name)}<small>screenshot soon</small></span>`;
+  return div;
+};
+
+/* ── a full flip card ──────────────────────────────────────────────────── */
+function cardHTML(project) {
+  const p = project.product || {};
+  const t = project.tech || {};
+  const stack = (t.stack || []).map((s) => `<span class="chip">${esc(s)}</span>`).join("");
+
+  return `
+  <div class="card-item reveal" data-id="${esc(project.id)}" data-tags="${esc((project.tags || []).join(" "))}">
+    <article class="card" tabindex="0" role="button"
+             aria-label="${esc(project.name)} — open details">
+      <div class="card-inner">
+
+        <!-- Product face -->
+        <div class="face face--product">
+          <div class="shot">${shotHTML(project)}</div>
+          <div class="body">
+            <span class="kicker">Product</span>
+            <h3>${esc(project.name)}</h3>
+            ${project.role ? `<p class="role">${esc(project.role)}</p>` : ""}
+            <div class="pdo">
+              ${p.problem ? `<p class="pdo-row"><b>Problem</b>${esc(p.problem)}</p>` : ""}
+              ${p.decision ? `<p class="pdo-row"><b>Decision</b>${esc(p.decision)}</p>` : ""}
+              ${p.outcome ? `<p class="pdo-row"><b>Outcome</b>${esc(p.outcome)}</p>` : ""}
+            </div>
+            <div class="face-foot">
+              ${smartLinkHTML(project)}
+              <button class="flip-btn" type="button" data-flip aria-label="Flip to technical view">
+                <span class="g" aria-hidden="true">⇄</span> Technical
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical face -->
+        <div class="face face--tech">
+          <div class="body">
+            <span class="kicker">// technical build</span>
+            <h3>${esc(project.name)}</h3>
+            ${t.arch ? `<div><div class="tech-label">architecture</div><p class="tech-block">${esc(t.arch)}</p></div>` : ""}
+            ${stack ? `<div><div class="tech-label">stack</div><div class="stackline">${stack}</div></div>` : ""}
+            ${t.calls ? `<div><div class="tech-label">hard calls</div><p class="calls">${esc(t.calls)}</p></div>` : ""}
+            <div class="face-foot">
+              ${smartLinkHTML(project)}
+              <button class="flip-btn" type="button" data-flip aria-label="Flip to product view">
+                <span class="g" aria-hidden="true">⇄</span> Product
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </article>
+  </div>`;
+}
+
+/* ── "Now building" strip (featured projects) ──────────────────────────── */
+function renderNow() {
+  const strip = $("#now-strip");
+  const featured = projects.filter((p) => p.featured);
+  const list = featured.length ? featured : projects.slice(0, 3);
+  strip.innerHTML = list
+    .map(
+      (p) => `
+      <button class="now-card" data-open="${esc(p.id)}" role="listitem">
+        <span class="now-tag">${esc((p.tags || [])[0] || "project")}</span>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.role || "")}</p>
+      </button>`
+    )
+    .join("");
+}
+
+/* ── grid + filters ────────────────────────────────────────────────────── */
+let activeFilter = "all";
+
+function renderGrid() {
+  const grid = $("#grid");
+  // featured first, otherwise stable order
+  const ordered = [...projects].sort((a, b) => (b.featured === true) - (a.featured === true));
+  grid.innerHTML = ordered.map(cardHTML).join("");
+  observeReveals();
+}
+
+function renderFilters() {
+  const row = $("#filters");
+  const counts = new Map();
+  projects.forEach((p) => (p.tags || []).forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1)));
+  const tags = [...counts.keys()].sort();
+
+  const btn = (key, label, count) =>
+    `<button class="filter-btn" type="button" data-filter="${esc(key)}"
+             aria-pressed="${key === activeFilter}">
+       ${esc(label)}<span class="count">${count}</span>
+     </button>`;
+
+  row.innerHTML =
+    btn("all", "All", projects.length) +
+    tags.map((tag) => btn(tag, tag, counts.get(tag))).join("");
+}
+
+function applyFilter(filter) {
+  activeFilter = filter;
+  $$("#filters .filter-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.filter === filter))
+  );
+
+  let visible = 0;
+  $$(".card-item").forEach((item) => {
+    const tags = (item.dataset.tags || "").split(" ");
+    const show = filter === "all" || tags.includes(filter);
+    item.classList.toggle("is-hidden", !show);
+    if (show) visible++;
+  });
+  $("#grid-empty").hidden = visible !== 0;
+}
+
+/* ── flip ──────────────────────────────────────────────────────────────── */
+function flipCard(card) {
+  card.classList.toggle("flipped");
+  const flipped = card.classList.contains("flipped");
+  // keep assistive tech honest about which face is up
+  $$(".flip-btn", card).forEach((b) => (b.setAttribute("aria-pressed", String(flipped))));
+}
+
+/* =============================================================================
+ * Modal — accessible: focus trap, Esc / click-out / ✕, restore focus
+ * =========================================================================== */
+const modalRoot = $("#modal-root");
+const modalDialog = $(".modal", modalRoot);
+const modalContent = $("#modal-content");
+let lastFocused = null;
+
+function stackChips(arr = []) {
+  return arr.map((s) => `<span class="chip">${esc(s)}</span>`).join("");
+}
+
+function modalHTML(project) {
+  const p = project.product || {};
+  const t = project.tech || {};
+  const d = project.detail || {};
+  const tags = (project.tags || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("");
+
+  // narrative: detail.body (split on blank lines) or fall back to the three product beats
+  let narrative = "";
+  if (d.body) {
+    narrative = d.body
+      .split(/\n\s*\n/)
+      .map((para) => `<p>${esc(para.trim())}</p>`)
+      .join("");
+  } else {
+    narrative = [p.problem, p.decision, p.outcome]
+      .filter(Boolean)
+      .map((x) => `<p>${esc(x)}</p>`)
+      .join("");
+  }
+
+  const metrics = (d.metrics || [])
+    .map(
+      (m) => `<div class="metric"><div class="metric-value">${esc(m.value)}</div>
+              <div class="metric-label">${esc(m.label)}</div></div>`
+    )
+    .join("");
+
+  // all links (primary + optional secondary) — modal is the one place both live
+  const links = [project.link, project.link2]
+    .map(resolveLink)
+    .filter((r) => r && !r.quiet && r.href)
+    .map(
+      (r) => `<a class="btn btn--ghost" href="${esc(r.href)}" target="_blank" rel="noopener noreferrer">${esc(r.label)}</a>`
+    )
+    .join("");
+
+  const heroShot = project.screenshot
+    ? `<img src="${esc(project.screenshot)}" alt="${esc(project.screenshotAlt || project.name)}"
+           loading="lazy" width="1600" height="800"
+           onerror="this.replaceWith(makePlaceholder('${esc(project.name)}'))" />`
+    : placeholderMarkup(project.name);
+
+  return `
+    <div class="modal-hero">${heroShot}</div>
+    <div class="modal-body">
+      <span class="modal-eyebrow">Project</span>
+      <h2 id="modal-title">${esc(project.name)}</h2>
+      ${project.role ? `<p class="modal-role">${esc(project.role)}</p>` : ""}
+      ${tags ? `<div class="modal-tags">${tags}</div>` : ""}
+
+      <div class="modal-narrative">${narrative}</div>
+
+      ${metrics ? `<div class="modal-metrics">${metrics}</div>` : ""}
+
+      <div class="modal-layers">
+        <div class="layer-panel layer-panel--product">
+          <h4><span class="dot"></span> Product reading</h4>
+          ${p.problem ? `<div class="layer-row"><b>Problem</b>${esc(p.problem)}</div>` : ""}
+          ${p.decision ? `<div class="layer-row"><b>Decision</b>${esc(p.decision)}</div>` : ""}
+          ${p.outcome ? `<div class="layer-row"><b>Outcome</b>${esc(p.outcome)}</div>` : ""}
+        </div>
+        <div class="layer-panel layer-panel--tech">
+          <h4><span class="dot"></span> Technical reading</h4>
+          ${t.arch ? `<div class="layer-row"><b>Architecture</b>${esc(t.arch)}</div>` : ""}
+          ${t.stack ? `<div class="layer-row"><b>Stack</b><div class="stackline">${stackChips(t.stack)}</div></div>` : ""}
+          ${t.calls ? `<div class="layer-row"><b>Hard calls</b>${esc(t.calls)}</div>` : ""}
+        </div>
+      </div>
+
+      ${links ? `<div class="modal-links">${links}</div>` : ""}
+    </div>`;
+}
+
+function openModal(id, trigger) {
+  const project = projects.find((p) => p.id === id);
+  if (!project) return;
+  lastFocused = trigger || document.activeElement;
+
+  modalContent.innerHTML = modalHTML(project);
+  modalRoot.hidden = false;
+  document.body.classList.add("modal-open");
+
+  // deep-link without a jump
+  history.replaceState(null, "", `#project/${project.id}`);
+
+  // focus the dialog for screen readers / keyboard
+  modalDialog.focus();
+  document.addEventListener("keydown", onModalKeydown);
+}
+
+function closeModal() {
+  if (modalRoot.hidden) return;
+  modalRoot.hidden = true;
+  document.body.classList.remove("modal-open");
+  document.removeEventListener("keydown", onModalKeydown);
+  if (location.hash.startsWith("#project/")) history.replaceState(null, "", location.pathname + location.search);
+  if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
+  lastFocused = null;
+}
+
+function onModalKeydown(e) {
+  if (e.key === "Escape") { closeModal(); return; }
+  if (e.key !== "Tab") return;
+
+  // focus trap
+  const focusable = $$(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    modalRoot
+  ).filter((el) => el.offsetParent !== null || el === modalDialog);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+
+/* ── scroll reveal (respects reduced motion) ───────────────────────────── */
+let revealObserver = null;
+function observeReveals() {
+  const items = $$(".reveal");
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+    items.forEach((el) => el.classList.add("in"));
+    return;
+  }
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            // small stagger for a considered feel
+            setTimeout(() => entry.target.classList.add("in"), (i % 3) * 80);
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+  }
+  items.forEach((el) => revealObserver.observe(el));
+}
+
+/* =============================================================================
+ * Wiring
+ * =========================================================================== */
+function wireEvents() {
+  // click delegation across the whole document
+  document.addEventListener("click", (e) => {
+    // flip button
+    const flip = e.target.closest("[data-flip]");
+    if (flip) {
+      e.stopPropagation();
+      flipCard(flip.closest(".card"));
+      return;
+    }
+    // real smart-links inside a card should navigate, not open the modal
+    if (e.target.closest("[data-stop]")) { e.stopPropagation(); return; }
+
+    // "Now building" card → open modal
+    const nowCard = e.target.closest("[data-open]");
+    if (nowCard) { openModal(nowCard.dataset.open, nowCard); return; }
+
+    // project card body → open modal
+    const card = e.target.closest(".card");
+    if (card) {
+      const id = card.closest(".card-item")?.dataset.id;
+      if (id) openModal(id, card);
+      return;
+    }
+
+    // filter buttons
+    const filter = e.target.closest("[data-filter]");
+    if (filter) { applyFilter(filter.dataset.filter); return; }
+
+    // modal close (backdrop or ✕)
+    if (e.target.closest("[data-close]")) { closeModal(); return; }
+  });
+
+  // keyboard: Enter/Space on a focused card opens it; keep flip on its own button
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest(".card");
+    if (card && e.target === card) {
+      e.preventDefault();
+      const id = card.closest(".card-item")?.dataset.id;
+      if (id) openModal(id, card);
+    }
+  });
+
+  // wire the [ASK ME] identity links from a single config (kept in one place)
+  applyIdentityLinks();
+}
+
+/* ── identity links: fill real URLs here once, applies everywhere ──────── */
+// [ASK ME] — set these two once and both header/footer/contact update.
+const IDENTITY = {
+  github: "https://github.com/Dadpops",
+  linkedin: "https://www.linkedin.com/in/kitcabena/"
+};
+function applyIdentityLinks() {
+  ["github", "linkedin"].forEach((key) => {
+    const url = (IDENTITY[key] || "").trim();
+    $$(`[data-ask="${key}"]`).forEach((el) => {
+      if (url) {
+        el.href = url;
+        const hint = $("[data-ask-hint]", el);
+        if (hint) hint.textContent = "open ↗";
+      } else {
+        // no dead link: disable navigation, keep it visibly "coming"
+        el.setAttribute("aria-disabled", "true");
+        el.addEventListener("click", (e) => e.preventDefault());
+        el.removeAttribute("target");
+      }
+    });
+  });
+}
+
+/* ── open a modal if the URL is a deep-link on load ────────────────────── */
+function openFromHash() {
+  const m = location.hash.match(/^#project\/(.+)$/);
+  if (m) openModal(decodeURIComponent(m[1]), null);
+}
+
+/* ── boot ──────────────────────────────────────────────────────────────── */
+function init() {
+  $("#year").textContent = new Date().getFullYear();
+  renderNow();
+  renderFilters();
+  renderGrid();
+  wireEvents();
+  openFromHash();
+}
+
+document.addEventListener("DOMContentLoaded", init);
