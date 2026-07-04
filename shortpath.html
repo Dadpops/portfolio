@@ -62,6 +62,9 @@
 
     .cs-diagram { margin-top: 24px; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--ink-900); padding: 18px; overflow-x: auto; }
     .cs-diagram svg { width: 100%; min-width: 620px; height: auto; display: block; }
+    .cs-diagram svg .d-step { opacity: 0; transition: opacity 0.5s ease; transition-delay: calc(var(--i, 0) * 0.11s); }
+    .cs-diagram.play svg .d-step { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .cs-diagram svg .d-step { opacity: 1; transition: none; } }
 
     .cs-stack { margin-top: 22px; display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; }
     .cs-stack-row { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding: 15px 18px; background: var(--ink-850); }
@@ -199,51 +202,49 @@
               </marker>
             </defs>
             <g font-family="'JetBrains Mono', monospace">
-              <!-- main pipeline -->
-              <g>
+              <g class="d-step" style="--i:0">
                 <rect x="20" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
                 <text x="40" y="98" fill="#3fd0c9" font-size="15" font-weight="700">⌘  Global hotkey</text>
                 <text x="40" y="122" fill="#8b97a7" font-size="12">summon over any app</text>
               </g>
-              <g>
+              <g class="d-step" style="--i:2">
                 <rect x="250" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
                 <text x="270" y="98" fill="#3fd0c9" font-size="15" font-weight="700">Overlay + search</text>
                 <text x="270" y="122" fill="#8b97a7" font-size="12">React, ranks live</text>
               </g>
-              <g>
+              <g class="d-step" style="--i:4">
                 <rect x="480" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
                 <text x="500" y="98" fill="#3fd0c9" font-size="15" font-weight="700">Fuzzy index</text>
                 <text x="500" y="122" fill="#8b97a7" font-size="12">Fuse.js</text>
               </g>
-              <g>
+              <g class="d-step" style="--i:6">
                 <rect x="700" y="60" width="180" height="92" rx="12" fill="#1a130a" stroke="#7a4d15"/>
                 <text x="720" y="98" fill="#f0a848" font-size="15" font-weight="700">Content store</text>
                 <text x="720" y="122" fill="#c3ccd8" font-size="12">CSV · nested folders</text>
               </g>
-              <line x1="200" y1="106" x2="250" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
-              <line x1="430" y1="106" x2="480" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
-              <line x1="660" y1="106" x2="700" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+              <line class="d-step" style="--i:1" x1="200" y1="106" x2="250" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+              <line class="d-step" style="--i:3" x1="430" y1="106" x2="480" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+              <line class="d-step" style="--i:5" x1="660" y1="106" x2="700" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
 
-              <!-- surfaces fed by the store -->
-              <text x="20" y="250" fill="#5b6674" font-size="12">SURFACES · same index, where reps already work</text>
-              <g>
+              <text class="d-step" style="--i:7" x="20" y="250" fill="#5b6674" font-size="12">SURFACES · same index, where reps already work</text>
+              <g class="d-step" style="--i:9">
                 <rect x="20" y="270" width="250" height="76" rx="12" fill="#12171f" stroke="#26303d"/>
                 <text x="40" y="302" fill="#eef2f7" font-size="14" font-weight="700">Stream Deck export</text>
                 <text x="40" y="324" fill="#8b97a7" font-size="12">top snippets to hardware keys</text>
               </g>
-              <g>
+              <g class="d-step" style="--i:11">
                 <rect x="300" y="270" width="250" height="76" rx="12" fill="#12171f" stroke="#26303d"/>
                 <text x="320" y="302" fill="#eef2f7" font-size="14" font-weight="700">Browser extension</text>
                 <text x="320" y="324" fill="#8b97a7" font-size="12">the same library, in the tab</text>
               </g>
-              <g>
+              <g class="d-step" style="--i:13">
                 <rect x="580" y="270" width="300" height="76" rx="12" fill="#12171f" stroke="#26303d" stroke-dasharray="5 4"/>
                 <text x="600" y="302" fill="#c3ccd8" font-size="14" font-weight="700">Team sync</text>
                 <text x="600" y="324" fill="#8b97a7" font-size="12">planned · CSV as the portable contract</text>
               </g>
-              <path d="M780 152 L780 210 L145 210 L145 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
-              <path d="M790 152 L790 210 L425 210 L425 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
-              <path d="M800 152 L800 260 L730 260 L730 270" fill="none" stroke="#f0a848" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar2)"/>
+              <path class="d-step" style="--i:8" d="M780 152 L780 210 L145 210 L145 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
+              <path class="d-step" style="--i:10" d="M790 152 L790 210 L425 210 L425 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
+              <path class="d-step" style="--i:12" d="M800 152 L800 260 L730 260 L730 270" fill="none" stroke="#f0a848" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar2)"/>
             </g>
           </svg>
         </div>
@@ -332,6 +333,32 @@
       return '<a href="' + src + '" target="_blank" rel="noopener noreferrer">' +
         '<img src="' + src + '" ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" alt="ShortPath ' + s.replace(/-/g, " ") + '"></a>';
     }).join("");
+
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var io = "IntersectionObserver" in window;
+      var dia = document.querySelector(".cs-diagram");
+      var secs = [].slice.call(document.querySelectorAll(".cs-section"));
+      if (reduce || !io) {
+        if (dia) dia.classList.add("play");
+        return;
+      }
+      secs.forEach(function (s) { s.classList.add("reveal"); });
+      var revObs = new IntersectionObserver(function (entries, o) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); o.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+      secs.forEach(function (s) { revObs.observe(s); });
+      if (dia) {
+        var diaObs = new IntersectionObserver(function (entries, o) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add("play"); o.unobserve(e.target); }
+          });
+        }, { threshold: 0.3 });
+        diaObs.observe(dia);
+      }
+    })();
   </script>
 </body>
 </html>
