@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ShortPath — case study · Kit Cabena</title>
+  <title>ShortPath case study · Kit Cabena</title>
   <meta name="description" content="ShortPath case study: a local-first, global-hotkey fuzzy-search launcher for support teams. The problem, the PRD, the architecture, the hard calls, and the outcome." />
   <meta name="theme-color" content="#0d1117" />
 
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="ShortPath — case study" />
+  <meta property="og:title" content="ShortPath case study" />
   <meta property="og:description" content="A local-first, global-hotkey fuzzy-search launcher for support teams. Problem, PRD, architecture, and hard calls." />
   <meta property="og:image" content="assets/og.png" />
 
@@ -97,7 +97,10 @@
         <span class="logo-text">Kit Cabena</span>
       </a>
       <nav class="nav" aria-label="Primary">
-        <a class="cs-back" href="index.html#work"><span aria-hidden="true">←</span> Back to work</a>
+        <a href="index.html#work">Work</a>
+        <a href="shortpath.html" aria-current="page">Case study</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -124,13 +127,13 @@
       <section class="cs-section">
         <p class="cs-kicker">The one-liner</p>
         <h2 class="cs-h2">Retrieval is a tax, so I removed it</h2>
-        <div class="cs-callout"><p>Support reps already know the snippet exists. ShortPath deletes the seconds between "I know the answer" and "here it is" — a global hotkey, fuzzy search, paste, done.</p></div>
+        <div class="cs-callout"><p>Support reps already know the snippet exists. ShortPath deletes the seconds between "I know the answer" and "here it is": a global hotkey, fuzzy search, paste, done.</p></div>
       </section>
 
       <section class="cs-section">
         <p class="cs-kicker">The problem</p>
         <h2 class="cs-h2">Death by a thousand lookups</h2>
-        <p class="cs-p">Frontline support runs on repeatable answers: saved replies, SOPs, troubleshooting docs, links. The knowledge exists — but retrieving it means leaving the ticket, hunting through a wiki or a folder of canned responses, copying, and coming back. It's only a few seconds each time. Multiplied across every ticket, every rep, every day, it's one of the quietest, largest time sinks in a support org.</p>
+        <p class="cs-p">Frontline support runs on repeatable answers: saved replies, SOPs, troubleshooting docs, links. The knowledge exists, but retrieving it means leaving the ticket, hunting through a wiki or a folder of canned responses, copying, and coming back. It's only a few seconds each time. Multiplied across every ticket, every rep, every day, it's one of the quietest, largest time sinks in a support org.</p>
         <p class="cs-p">Existing tools solved the wrong shape of the problem: knowledge bases optimize for <strong>writing and organizing</strong> content, not for <strong>retrieving</strong> it at the speed of a live conversation. The reps didn't need a better library. They needed a faster door into the one they already had.</p>
         <div class="cs-stat-row">
           <div class="cs-stat"><b>1 keystroke</b><span>to the right snippet</span></div>
@@ -142,13 +145,13 @@
       <section class="cs-section">
         <p class="cs-kicker">Who it's for</p>
         <h2 class="cs-h2">The rep mid-ticket, not the manager mid-audit</h2>
-        <p class="cs-p">I scoped to a single primary user: a support agent with a customer waiting. Every decision was measured against one question — does this make the next answer faster? Admins, analytics, and content governance were explicitly someone else's job. Keeping the user singular is what kept the product sharp.</p>
+        <p class="cs-p">I scoped to a single primary user: a support agent with a customer waiting. Every decision was measured against one question: does this make the next answer faster? Admins, analytics, and content governance were explicitly someone else's job. Keeping the user singular is what kept the product sharp.</p>
       </section>
 
       <section class="cs-section">
         <p class="cs-kicker">The PRD, condensed</p>
         <h2 class="cs-h2">What I decided to build (and refused to)</h2>
-        <p class="cs-p">Before writing app code, I validated the pain and the shape through rep interviews and wrote it up as a real PRD. The most useful part wasn't the goals — it was the non-goals. Scope discipline is the whole reason a solo project shipped.</p>
+        <p class="cs-p">Before writing app code, I validated the pain and the shape through rep interviews and wrote it up as a real PRD. The most useful part wasn't the goals. It was the non-goals. Scope discipline is the whole reason a solo project shipped.</p>
         <div class="cs-cols">
           <div class="cs-card cs-card--goals">
             <h3><span class="dot"></span> Goals</h3>
@@ -166,7 +169,7 @@
               <li>Not a knowledge base or a CMS</li>
               <li>No accounts, no cloud dependency to function</li>
               <li>No analytics dashboards or admin console</li>
-              <li>No AI generation — it retrieves what you wrote</li>
+              <li>No AI generation; it retrieves what you wrote</li>
             </ul>
           </div>
           <div class="cs-card cs-card--metrics">
@@ -236,7 +239,7 @@
               <g>
                 <rect x="580" y="270" width="300" height="76" rx="12" fill="#12171f" stroke="#26303d" stroke-dasharray="5 4"/>
                 <text x="600" y="302" fill="#c3ccd8" font-size="14" font-weight="700">Team sync</text>
-                <text x="600" y="324" fill="#8b97a7" font-size="12">planned — CSV as the portable contract</text>
+                <text x="600" y="324" fill="#8b97a7" font-size="12">planned · CSV as the portable contract</text>
               </g>
               <path d="M780 152 L780 210 L145 210 L145 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
               <path d="M790 152 L790 210 L425 210 L425 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
@@ -250,9 +253,9 @@
         <p class="cs-kicker">The stack</p>
         <h2 class="cs-h2">What I used, and why</h2>
         <div class="cs-stack">
-          <div class="cs-stack-row"><span class="name">Electron</span><span class="why">A true desktop app that can register a system-wide hotkey and float an overlay above any other window — the non-negotiable requirement a web app can't meet.</span></div>
+          <div class="cs-stack-row"><span class="name">Electron</span><span class="why">A true desktop app that can register a system-wide hotkey and float an overlay above any other window; the non-negotiable requirement a web app can't meet.</span></div>
           <div class="cs-stack-row"><span class="name">React</span><span class="why">The overlay is a tight, stateful search UI. React kept the "rank and render as you type" loop simple and fast to iterate on.</span></div>
-          <div class="cs-stack-row"><span class="name">Fuse.js</span><span class="why">Lightweight client-side fuzzy search. No server, no index to host — it runs against the in-memory content store instantly.</span></div>
+          <div class="cs-stack-row"><span class="name">Fuse.js</span><span class="why">Lightweight client-side fuzzy search. No server, no index to host; it runs against the in-memory content store instantly.</span></div>
           <div class="cs-stack-row"><span class="name">CSV import</span><span class="why">The content contract. A team can export its existing library to CSV and be running in minutes, and keep it in version control. Nested subfolders map straight to hierarchy.</span></div>
           <div class="cs-stack-row"><span class="name">Companion surfaces</span><span class="why">A Stream Deck export and a browser extension reuse the same index so the library follows reps into the tools they already live in.</span></div>
         </div>
@@ -264,11 +267,11 @@
         <div class="cs-calls">
           <div class="cs-call">
             <h4>Local-first <em>over</em> a hosted service</h4>
-            <p>Reps' data stays on their machine and the tool works offline — a real trust and reliability win for support teams. The cost: I take on the harder job of building a sync path later instead of getting it free from a backend. Worth it. Privacy and "always works" beat convenience for this user.</p>
+            <p>Reps' data stays on their machine and the tool works offline, a real trust and reliability win for support teams. The cost: I take on the harder job of building a sync path later instead of getting it free from a backend. Worth it. Privacy and "always works" beat convenience for this user.</p>
           </div>
           <div class="cs-call">
             <h4>A portable CSV <em>over</em> a database</h4>
-            <p>Making the content model a flat, portable CSV means teams own and version their library without a database or a migration. It caps how relational the data can get — but for "snippets in folders," that ceiling is high enough, and the portability is a feature reps and admins both feel.</p>
+            <p>Making the content model a flat, portable CSV means teams own and version their library without a database or a migration. It caps how relational the data can get, but for "snippets in folders," that ceiling is high enough, and the portability is a feature reps and admins both feel.</p>
           </div>
           <div class="cs-call">
             <h4>Retrieval <em>over</em> generation</h4>
@@ -276,7 +279,7 @@
           </div>
           <div class="cs-call">
             <h4>One job <em>over</em> ten features</h4>
-            <p>The whole roadmap was ruthlessly scoped to "get me the right snippet, now." Everything adjacent — authoring, analytics, governance — was cut on purpose. That constraint is why it shipped as one clean, legible product instead of a half-built platform.</p>
+            <p>The whole roadmap was ruthlessly scoped to "get me the right snippet, now." Everything adjacent (authoring, analytics, governance) was cut on purpose. That constraint is why it shipped as one clean, legible product instead of a half-built platform.</p>
           </div>
         </div>
       </section>
@@ -290,7 +293,7 @@
       <section class="cs-section">
         <p class="cs-kicker">Outcome</p>
         <h2 class="cs-h2">What shipped, and what's next</h2>
-        <p class="cs-p">ShortPath shipped open-source, with the PRD and a written case study alongside the code — because the point was to demonstrate product judgment (scoping, validation, tradeoffs) as much as the engineering. It's a tool reps actually keep open: resources are one keystroke away instead of a tab-hunt.</p>
+        <p class="cs-p">ShortPath shipped open-source, with the PRD and a written case study alongside the code, because the point was to demonstrate product judgment (scoping, validation, tradeoffs) as much as the engineering. It's a tool reps actually keep open: resources are one keystroke away instead of a tab-hunt.</p>
         <p class="cs-p">The clearest next step is the one the architecture was designed for: <strong>team sync</strong>, using the portable CSV as the contract so a whole team shares one library without giving up the local-first guarantees. Because the content model was kept clean from day one, that's an addition, not a rewrite.</p>
       </section>
 
