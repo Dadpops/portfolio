@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js?v=9";
+import { projects } from "./projects.js?v=10";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -175,6 +175,7 @@ function renderGrid() {
   const ordered = [...projects].sort((a, b) => (b.featured === true) - (a.featured === true));
   grid.innerHTML = ordered.map(cardHTML).join("");
   observeReveals();
+  setupTilt();
 }
 
 function renderFilters() {
@@ -213,6 +214,27 @@ function applyFilter(filter) {
 /* ── flip ──────────────────────────────────────────────────────────────── */
 function flipCard(card) {
   card.classList.toggle("flipped");
+}
+
+/* subtle cursor-reactive 3D tilt on the grid cards */
+function setupTilt() {
+  if (prefersReducedMotion) return;
+  $$(".grid .card").forEach((card) => {
+    let raf = 0;
+    card.addEventListener("mousemove", (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        card.style.transform = `rotateY(${(px * 6).toFixed(2)}deg) rotateX(${(-py * 6).toFixed(2)}deg)`;
+      });
+    });
+    card.addEventListener("mouseleave", () => {
+      if (raf) cancelAnimationFrame(raf);
+      card.style.transform = "";
+    });
+  });
 }
 
 /* =============================================================================
@@ -263,6 +285,21 @@ function modalHTML(project) {
     )
     .join("");
 
+  // playable embed for live-demo projects; case-study button for the flagship
+  const demoUrl = project.link && project.link.type === "demo" && project.link.url ? project.link.url : "";
+  const playHTML = demoUrl
+    ? `<div class="modal-play">
+        <button class="play-gate" type="button" data-play="${esc(demoUrl)}"${project.screenshot ? ` style="background-image:url('${esc(project.screenshot)}')"` : ""}>
+          <span class="play-btn" aria-hidden="true">▶</span>
+          <span class="play-txt"><b>Play ${esc(project.name)} right here</b><span>loads the live build in-page</span></span>
+        </button>
+      </div>`
+    : "";
+  const csBtn = project.caseStudy
+    ? `<a class="btn btn--primary" href="${esc(project.caseStudy)}">Read the full case study →</a>`
+    : "";
+  const allLinks = csBtn + links;
+
   // media: hero screenshot + gallery, aspect-preserving; placeholder when image-less
   const galleryImgs = [project.screenshot, ...(d.gallery || [])].filter(Boolean);
   const media = galleryImgs.length
@@ -281,6 +318,8 @@ function modalHTML(project) {
       <h2 id="modal-title">${esc(project.name)}</h2>
       ${project.role ? `<p class="modal-role">${esc(project.role)}</p>` : ""}
       ${tags ? `<div class="modal-tags">${tags}</div>` : ""}
+
+      ${playHTML}
 
       <div class="modal-narrative">${narrative}</div>
 
@@ -301,7 +340,7 @@ function modalHTML(project) {
         </div>
       </div>
 
-      ${links ? `<div class="modal-links">${links}</div>` : ""}
+      ${allLinks ? `<div class="modal-links">${allLinks}</div>` : ""}
     </div>`;
 }
 
@@ -428,6 +467,18 @@ function wireEvents() {
     // résumé viewer trigger (hero / contact / footer)
     const resumeBtn = e.target.closest("[data-resume]");
     if (resumeBtn) { e.preventDefault(); openResumeModal(resumeBtn); return; }
+
+    // play a live demo in-place
+    const play = e.target.closest("[data-play]");
+    if (play) {
+      const url = play.dataset.play;
+      const wrap = play.closest(".modal-play");
+      wrap.innerHTML = `<div class="play-frame">
+        <iframe src="${esc(url)}" title="Live demo" allow="fullscreen; autoplay; gamepad; clipboard-write"></iframe>
+        <a class="play-out" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Not loading? Open in a new tab ↗</a>
+      </div>`;
+      return;
+    }
 
     // interactive hero demo card → flip on click
     const demo = e.target.closest(".demo-card");

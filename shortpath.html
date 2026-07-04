@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShortPath — case study · Kit Cabena</title>
+  <meta name="description" content="ShortPath case study: a local-first, global-hotkey fuzzy-search launcher for support teams. The problem, the PRD, the architecture, the hard calls, and the outcome." />
+  <meta name="theme-color" content="#0d1117" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ShortPath — case study" />
+  <meta property="og:description" content="A local-first, global-hotkey fuzzy-search launcher for support teams. Problem, PRD, architecture, and hard calls." />
+  <meta property="og:image" content="assets/og.png" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/styles.css?v=10" />
+
+  <style>
+    .cs-back { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 13px; color: var(--fog-500); }
+    .cs-back:hover { color: var(--tech-bright); }
+
+    .cs-hero { padding-top: clamp(40px, 7vh, 72px); }
+    .cs-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tech); margin-bottom: 16px; }
+    .cs-title { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 7vw, 4.6rem); letter-spacing: -0.02em; color: var(--fog-100); line-height: 1; }
+    .cs-sub { margin-top: 18px; max-width: 60ch; font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--fog-300); }
+    .cs-actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .cs-meta { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--hair-soft); border: 1px solid var(--hair-soft); border-radius: var(--radius); overflow: hidden; }
+    .cs-meta div { background: var(--ink-850); padding: 16px 18px; }
+    .cs-meta dt { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog-700); margin-bottom: 6px; }
+    .cs-meta dd { margin: 0; font-size: 14px; color: var(--fog-100); }
+
+    .cs-wrap { max-width: 820px; }
+    .cs-section { padding-block: clamp(36px, 6vh, 64px); border-top: 1px solid var(--hair-soft); }
+    .cs-section:first-of-type { border-top: 0; }
+    .cs-kicker { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--product); margin-bottom: 12px; }
+    .cs-h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.5rem, 3.4vw, 2.1rem); color: var(--fog-100); letter-spacing: -0.01em; }
+    .cs-p { margin-top: 16px; font-size: 1.02rem; line-height: 1.7; color: var(--fog-300); max-width: 68ch; }
+    .cs-p + .cs-p { margin-top: 14px; }
+    .cs-p strong { color: var(--fog-100); font-weight: 600; }
+
+    .cs-callout { margin-top: 8px; border-left: 3px solid var(--product); background: linear-gradient(180deg, rgba(240,168,72,0.06), transparent); padding: 18px 22px; border-radius: 0 var(--radius) var(--radius) 0; }
+    .cs-callout p { margin: 0; font-family: var(--font-display); font-size: 1.15rem; line-height: 1.4; color: var(--fog-100); }
+
+    .cs-stat-row { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .cs-stat { border: 1px solid var(--hair); border-radius: var(--radius); padding: 18px; background: var(--ink-850); }
+    .cs-stat b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; color: var(--product-bright); }
+    .cs-stat span { font-family: var(--font-mono); font-size: 11.5px; color: var(--fog-500); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .cs-cols { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+    .cs-card { border: 1px solid var(--hair); border-radius: var(--radius); padding: 20px; background: var(--surface); }
+    .cs-card h3 { font-family: var(--font-display); font-size: 1rem; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; color: var(--fog-100); }
+    .cs-card h3 .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .cs-card--goals .dot { background: var(--tech); }
+    .cs-card--nongoals .dot { background: var(--fog-700); }
+    .cs-card--metrics .dot { background: var(--product); }
+    .cs-card ul { margin: 0; padding-left: 18px; }
+    .cs-card li { font-size: 13.5px; line-height: 1.55; color: var(--fog-300); margin-bottom: 8px; }
+
+    .cs-diagram { margin-top: 24px; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--ink-900); padding: 18px; overflow-x: auto; }
+    .cs-diagram svg { width: 100%; min-width: 620px; height: auto; display: block; }
+
+    .cs-stack { margin-top: 22px; display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; }
+    .cs-stack-row { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding: 15px 18px; background: var(--ink-850); }
+    .cs-stack-row .name { font-family: var(--font-mono); font-size: 13px; color: var(--tech-bright); }
+    .cs-stack-row .why { font-size: 13.5px; color: var(--fog-300); line-height: 1.5; }
+    @media (max-width: 560px) { .cs-stack-row { grid-template-columns: 1fr; gap: 4px; } }
+
+    .cs-calls { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .cs-call { border: 1px solid var(--hair); border-radius: var(--radius); padding: 18px 20px; background: var(--surface); }
+    .cs-call h4 { margin: 0 0 6px; font-family: var(--font-display); font-size: 1.02rem; color: var(--fog-100); }
+    .cs-call h4 em { font-style: normal; color: var(--product); }
+    .cs-call p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--fog-400, var(--fog-500)); }
+
+    .cs-gallery { margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .cs-gallery a { border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; background: var(--ink-900); line-height: 0; transition: border-color 0.16s var(--ease); }
+    .cs-gallery a:hover { border-color: var(--tech); }
+    .cs-gallery img { width: 100%; height: auto; display: block; }
+
+    .cs-cta { margin-top: 12px; border: 1px solid var(--hair); border-radius: var(--radius-lg); padding: clamp(24px, 5vw, 44px); text-align: center;
+      background: radial-gradient(120% 140% at 50% -20%, var(--product-glow), transparent 55%), linear-gradient(180deg, var(--surface), var(--ink-800)); }
+    .cs-cta h2 { font-family: var(--font-display); font-size: 1.6rem; color: var(--fog-100); margin: 0 0 8px; }
+    .cs-cta p { color: var(--fog-400, var(--fog-500)); margin: 0 auto 22px; max-width: 46ch; }
+    .cs-cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#cs-main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="index.html" aria-label="Kit Cabena, home">
+        <span class="logo-mark" aria-hidden="true">KC</span>
+        <span class="logo-text">Kit Cabena</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a class="cs-back" href="index.html#work"><span aria-hidden="true">←</span> Back to work</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="cs-main">
+    <section class="cs-hero wrap">
+      <p class="cs-eyebrow">Case study · Tooling</p>
+      <h1 class="cs-title">ShortPath</h1>
+      <p class="cs-sub">A local-first, global-hotkey fuzzy-search launcher that puts a support team's saved replies, SOPs, and docs one keystroke away, without leaving the conversation.</p>
+      <div class="cs-actions">
+        <a class="btn btn--primary" href="https://github.com/Dadpops/ShortPath" target="_blank" rel="noopener noreferrer">View source ↗</a>
+        <a class="btn btn--ghost" href="index.html#work">All projects</a>
+      </div>
+      <dl class="cs-meta">
+        <div><dt>Role</dt><dd>Product + engineering (solo)</dd></div>
+        <div><dt>Type</dt><dd>Open-source desktop app</dd></div>
+        <div><dt>Platform</dt><dd>Windows / macOS / Linux</dd></div>
+        <div><dt>Core stack</dt><dd>Electron · React · Fuse.js</dd></div>
+      </dl>
+    </section>
+
+    <div class="cs-wrap wrap">
+
+      <section class="cs-section">
+        <p class="cs-kicker">The one-liner</p>
+        <h2 class="cs-h2">Retrieval is a tax, so I removed it</h2>
+        <div class="cs-callout"><p>Support reps already know the snippet exists. ShortPath deletes the seconds between "I know the answer" and "here it is" — a global hotkey, fuzzy search, paste, done.</p></div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">The problem</p>
+        <h2 class="cs-h2">Death by a thousand lookups</h2>
+        <p class="cs-p">Frontline support runs on repeatable answers: saved replies, SOPs, troubleshooting docs, links. The knowledge exists — but retrieving it means leaving the ticket, hunting through a wiki or a folder of canned responses, copying, and coming back. It's only a few seconds each time. Multiplied across every ticket, every rep, every day, it's one of the quietest, largest time sinks in a support org.</p>
+        <p class="cs-p">Existing tools solved the wrong shape of the problem: knowledge bases optimize for <strong>writing and organizing</strong> content, not for <strong>retrieving</strong> it at the speed of a live conversation. The reps didn't need a better library. They needed a faster door into the one they already had.</p>
+        <div class="cs-stat-row">
+          <div class="cs-stat"><b>1 keystroke</b><span>to the right snippet</span></div>
+          <div class="cs-stat"><b>0 tab-hunts</b><span>stay in the conversation</span></div>
+          <div class="cs-stat"><b>100% local</b><span>data never leaves the machine</span></div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">Who it's for</p>
+        <h2 class="cs-h2">The rep mid-ticket, not the manager mid-audit</h2>
+        <p class="cs-p">I scoped to a single primary user: a support agent with a customer waiting. Every decision was measured against one question — does this make the next answer faster? Admins, analytics, and content governance were explicitly someone else's job. Keeping the user singular is what kept the product sharp.</p>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">The PRD, condensed</p>
+        <h2 class="cs-h2">What I decided to build (and refused to)</h2>
+        <p class="cs-p">Before writing app code, I validated the pain and the shape through rep interviews and wrote it up as a real PRD. The most useful part wasn't the goals — it was the non-goals. Scope discipline is the whole reason a solo project shipped.</p>
+        <div class="cs-cols">
+          <div class="cs-card cs-card--goals">
+            <h3><span class="dot"></span> Goals</h3>
+            <ul>
+              <li>Summon from anywhere via a global hotkey, over any app</li>
+              <li>Fuzzy search that ranks as you type</li>
+              <li>Rich-text snippets, copy or paste in one action</li>
+              <li>Import an existing library from CSV in minutes</li>
+              <li>Work fully offline; own your own data</li>
+            </ul>
+          </div>
+          <div class="cs-card cs-card--nongoals">
+            <h3><span class="dot"></span> Non-goals</h3>
+            <ul>
+              <li>Not a knowledge base or a CMS</li>
+              <li>No accounts, no cloud dependency to function</li>
+              <li>No analytics dashboards or admin console</li>
+              <li>No AI generation — it retrieves what you wrote</li>
+            </ul>
+          </div>
+          <div class="cs-card cs-card--metrics">
+            <h3><span class="dot"></span> Success looks like</h3>
+            <ul>
+              <li>Reps keep it open all day, unprompted</li>
+              <li>Time-to-snippet feels instant, not "a lookup"</li>
+              <li>A team can seed its whole library before lunch</li>
+              <li>The product thinking is legible, not just the code</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">How it works</p>
+        <h2 class="cs-h2">The architecture</h2>
+        <p class="cs-p">ShortPath is a local-first Electron shell with a React overlay bound to a global hotkey. A fuzzy index (Fuse.js) sits in front of a flat content store imported from CSV, with nested subfolders preserved as hierarchy. The same index feeds a couple of extra surfaces so reps can reach their library from wherever they already work.</p>
+        <div class="cs-diagram">
+          <svg viewBox="0 0 900 380" role="img" aria-label="ShortPath architecture: a global hotkey opens a React overlay whose fuzzy index reads a local CSV content store, which also feeds Stream Deck export and a browser extension.">
+            <defs>
+              <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="#3fd0c9" />
+              </marker>
+              <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="#f0a848" />
+              </marker>
+            </defs>
+            <g font-family="'JetBrains Mono', monospace">
+              <!-- main pipeline -->
+              <g>
+                <rect x="20" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
+                <text x="40" y="98" fill="#3fd0c9" font-size="15" font-weight="700">⌘  Global hotkey</text>
+                <text x="40" y="122" fill="#8b97a7" font-size="12">summon over any app</text>
+              </g>
+              <g>
+                <rect x="250" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
+                <text x="270" y="98" fill="#3fd0c9" font-size="15" font-weight="700">Overlay + search</text>
+                <text x="270" y="122" fill="#8b97a7" font-size="12">React, ranks live</text>
+              </g>
+              <g>
+                <rect x="480" y="60" width="180" height="92" rx="12" fill="#12171f" stroke="#26303d"/>
+                <text x="500" y="98" fill="#3fd0c9" font-size="15" font-weight="700">Fuzzy index</text>
+                <text x="500" y="122" fill="#8b97a7" font-size="12">Fuse.js</text>
+              </g>
+              <g>
+                <rect x="700" y="60" width="180" height="92" rx="12" fill="#1a130a" stroke="#7a4d15"/>
+                <text x="720" y="98" fill="#f0a848" font-size="15" font-weight="700">Content store</text>
+                <text x="720" y="122" fill="#c3ccd8" font-size="12">CSV · nested folders</text>
+              </g>
+              <line x1="200" y1="106" x2="250" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+              <line x1="430" y1="106" x2="480" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+              <line x1="660" y1="106" x2="700" y2="106" stroke="#3fd0c9" stroke-width="2" marker-end="url(#ar)"/>
+
+              <!-- surfaces fed by the store -->
+              <text x="20" y="250" fill="#5b6674" font-size="12">SURFACES · same index, where reps already work</text>
+              <g>
+                <rect x="20" y="270" width="250" height="76" rx="12" fill="#12171f" stroke="#26303d"/>
+                <text x="40" y="302" fill="#eef2f7" font-size="14" font-weight="700">Stream Deck export</text>
+                <text x="40" y="324" fill="#8b97a7" font-size="12">top snippets to hardware keys</text>
+              </g>
+              <g>
+                <rect x="300" y="270" width="250" height="76" rx="12" fill="#12171f" stroke="#26303d"/>
+                <text x="320" y="302" fill="#eef2f7" font-size="14" font-weight="700">Browser extension</text>
+                <text x="320" y="324" fill="#8b97a7" font-size="12">the same library, in the tab</text>
+              </g>
+              <g>
+                <rect x="580" y="270" width="300" height="76" rx="12" fill="#12171f" stroke="#26303d" stroke-dasharray="5 4"/>
+                <text x="600" y="302" fill="#c3ccd8" font-size="14" font-weight="700">Team sync</text>
+                <text x="600" y="324" fill="#8b97a7" font-size="12">planned — CSV as the portable contract</text>
+              </g>
+              <path d="M780 152 L780 210 L145 210 L145 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
+              <path d="M790 152 L790 210 L425 210 L425 270" fill="none" stroke="#f0a848" stroke-width="2" marker-end="url(#ar2)"/>
+              <path d="M800 152 L800 260 L730 260 L730 270" fill="none" stroke="#f0a848" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar2)"/>
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">The stack</p>
+        <h2 class="cs-h2">What I used, and why</h2>
+        <div class="cs-stack">
+          <div class="cs-stack-row"><span class="name">Electron</span><span class="why">A true desktop app that can register a system-wide hotkey and float an overlay above any other window — the non-negotiable requirement a web app can't meet.</span></div>
+          <div class="cs-stack-row"><span class="name">React</span><span class="why">The overlay is a tight, stateful search UI. React kept the "rank and render as you type" loop simple and fast to iterate on.</span></div>
+          <div class="cs-stack-row"><span class="name">Fuse.js</span><span class="why">Lightweight client-side fuzzy search. No server, no index to host — it runs against the in-memory content store instantly.</span></div>
+          <div class="cs-stack-row"><span class="name">CSV import</span><span class="why">The content contract. A team can export its existing library to CSV and be running in minutes, and keep it in version control. Nested subfolders map straight to hierarchy.</span></div>
+          <div class="cs-stack-row"><span class="name">Companion surfaces</span><span class="why">A Stream Deck export and a browser extension reuse the same index so the library follows reps into the tools they already live in.</span></div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">Hard calls</p>
+        <h2 class="cs-h2">The tradeoffs I owned</h2>
+        <div class="cs-calls">
+          <div class="cs-call">
+            <h4>Local-first <em>over</em> a hosted service</h4>
+            <p>Reps' data stays on their machine and the tool works offline — a real trust and reliability win for support teams. The cost: I take on the harder job of building a sync path later instead of getting it free from a backend. Worth it. Privacy and "always works" beat convenience for this user.</p>
+          </div>
+          <div class="cs-call">
+            <h4>A portable CSV <em>over</em> a database</h4>
+            <p>Making the content model a flat, portable CSV means teams own and version their library without a database or a migration. It caps how relational the data can get — but for "snippets in folders," that ceiling is high enough, and the portability is a feature reps and admins both feel.</p>
+          </div>
+          <div class="cs-call">
+            <h4>Retrieval <em>over</em> generation</h4>
+            <p>No AI writing here. ShortPath surfaces exactly what the team already approved and wrote, instantly and predictably. That's the right call for canned support responses, where "correct and on-brand" beats "plausible."</p>
+          </div>
+          <div class="cs-call">
+            <h4>One job <em>over</em> ten features</h4>
+            <p>The whole roadmap was ruthlessly scoped to "get me the right snippet, now." Everything adjacent — authoring, analytics, governance — was cut on purpose. That constraint is why it shipped as one clean, legible product instead of a half-built platform.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">Screens</p>
+        <h2 class="cs-h2">A look at it</h2>
+        <div class="cs-gallery" id="cs-gallery"></div>
+      </section>
+
+      <section class="cs-section">
+        <p class="cs-kicker">Outcome</p>
+        <h2 class="cs-h2">What shipped, and what's next</h2>
+        <p class="cs-p">ShortPath shipped open-source, with the PRD and a written case study alongside the code — because the point was to demonstrate product judgment (scoping, validation, tradeoffs) as much as the engineering. It's a tool reps actually keep open: resources are one keystroke away instead of a tab-hunt.</p>
+        <p class="cs-p">The clearest next step is the one the architecture was designed for: <strong>team sync</strong>, using the portable CSV as the contract so a whole team shares one library without giving up the local-first guarantees. Because the content model was kept clean from day one, that's an addition, not a rewrite.</p>
+      </section>
+
+      <section class="cs-section">
+        <div class="cs-cta">
+          <h2>Want the deeper version?</h2>
+          <p>The full PRD and code are open-source. Or reach out and I'll walk you through the decisions.</p>
+          <div class="cs-cta-btns">
+            <a class="btn btn--primary" href="https://github.com/Dadpops/ShortPath" target="_blank" rel="noopener noreferrer">View source ↗</a>
+            <a class="btn btn--ghost" href="mailto:dadpopsdev@gmail.com?subject=ShortPath">Email me</a>
+            <a class="btn btn--ghost" href="index.html#work">Back to work</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="footer-thesis">The work reads two ways. <span aria-hidden="true">⇄</span></p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="mailto:dadpopsdev@gmail.com">Email</a>
+        <a href="https://github.com/Dadpops" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+      <p class="footer-fine">© <span id="year">2026</span> Kit Cabena</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    var shots = ["main","search-results","onboarding","tools","favorites","keyboard-shortcuts","settings","help"];
+    document.getElementById("cs-gallery").innerHTML = shots.map(function (s, i) {
+      var src = "assets/screens/shortpath/" + s + ".webp";
+      return '<a href="' + src + '" target="_blank" rel="noopener noreferrer">' +
+        '<img src="' + src + '" ' + (i < 2 ? "" : 'loading="lazy" ') + 'decoding="async" alt="ShortPath ' + s.replace(/-/g, " ") + '"></a>';
+    }).join("");
+  </script>
+</body>
+</html>

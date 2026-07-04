@@ -48,6 +48,7 @@ export const projects = [
       type: "repo",
       url: "https://github.com/Dadpops/ShortPath"
     },
+    caseStudy: "shortpath.html",   // flagship deep-dive page
 
     product: {
       problem:
