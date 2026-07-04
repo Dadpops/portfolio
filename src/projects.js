@@ -41,8 +41,8 @@ export const projects = [
     tags: ["tooling", "shipped", "product"],
     featured: true,
 
-    screenshot: "assets/shortpath.png",
-    screenshotAlt: "ShortPath global fuzzy-search overlay surfacing saved replies",
+    screenshot: "assets/screens/shortpath/main.webp",
+    screenshotAlt: "ShortPath desktop app — main saved-replies view",
 
     link: {
       type: "repo",
@@ -68,7 +68,15 @@ export const projects = [
     detail: {
       body:
         "ShortPath started as a support-team frustration: the knowledge exists, but the retrieval tax is real. Rather than build a sprawling knowledge base, I scoped to the single highest-frequency action — 'get me the right snippet, now' — and treated everything else as out of scope on purpose.\n\nThe build is deliberately boring where it should be and sharp where it matters: a global hotkey summons an overlay, fuzzy search ranks results as you type, and CSV import means a team can seed its whole library in minutes and keep it in version control. Stream Deck export and a companion browser extension extend the same index to where reps already work.\n\nIt shipped open-source with the PRD and a written case study, because the point was to demonstrate product judgment — scoping, validation, tradeoffs — as much as the engineering.",
-      gallery: [],
+      gallery: [
+        "assets/screens/shortpath/search-results.webp",
+        "assets/screens/shortpath/onboarding.webp",
+        "assets/screens/shortpath/tools.webp",
+        "assets/screens/shortpath/favorites.webp",
+        "assets/screens/shortpath/keyboard-shortcuts.webp",
+        "assets/screens/shortpath/settings.webp",
+        "assets/screens/shortpath/help.webp"
+      ],
       metrics: [
         { label: "Time-to-snippet", value: "1 keystroke" },
         { label: "Content source", value: "Portable CSV" },
@@ -84,8 +92,8 @@ export const projects = [
     tags: ["tooling", "shipped", "product"],
     featured: false,
 
-    screenshot: "assets/help-center-pipeline.png",
-    screenshotAlt: "Documentation pipeline flow from ticket data to published article",
+    screenshot: "",   // internal WhatConverts project — no public screenshots (renders placeholder)
+    screenshotAlt: "Help Center Pipeline",
 
     link: {
       type: "none",
@@ -127,8 +135,8 @@ export const projects = [
     tags: ["game", "product"],
     featured: true,
 
-    screenshot: "assets/rift-protocol.png",
-    screenshotAlt: "RIFT PROTOCOL 2v2 match with operative classes in play",
+    screenshot: "assets/screens/rift/battle.webp",
+    screenshotAlt: "RIFT PROTOCOL — a 2v2 battle in progress",
 
     link: {
       type: "demo",
@@ -156,7 +164,12 @@ export const projects = [
     detail: {
       body:
         "RIFT PROTOCOL is where I got to treat game design as product design. The core question was retention, and the answer wasn't 'more cards' — it was giving players a ladder to climb. Mastery tracks and a Daily Rift gave the game a tomorrow.\n\nTechnically it's a real-time, server-authoritative multiplayer game: the server owns the truth, clients render it. Six operative classes had to be balanced against each other, which I approached as a simulation problem — 17,000+ automated matches surfaced dominant strategies far faster than human playtesting could. An Escalations mode and a full mobile UI pass followed once the core loop held up.",
-      gallery: [],
+      gallery: [
+        "assets/screens/rift/rift-cards.webp",
+        "assets/screens/rift/multiplayer-lobby.webp",
+        "assets/screens/rift/escalations.webp",
+        "assets/screens/rift/menu.webp"
+      ],
       metrics: [
         { label: "Simulated matches", value: "17,000+" },
         { label: "Operative classes", value: "6" },
@@ -172,8 +185,8 @@ export const projects = [
     tags: ["tooling", "product"],
     featured: false,
 
-    screenshot: "assets/storyframe-studio.png",
-    screenshotAlt: "Storyframe Studio guided authoring view with shareable world card",
+    screenshot: "assets/screens/storyframe/01-worlds.webp",
+    screenshotAlt: "Storyframe Studio — worlds overview",
 
     link: {
       type: "repo",
@@ -199,7 +212,14 @@ export const projects = [
     detail: {
       body:
         "Storyframe Studio is a thesis about what writers actually need: not a generation engine, but a structured way to think and something concrete to share. So the hero output is a 'world card' — a shareable artifact — and the whole flow is guided authoring, not autocomplete.\n\nThe architecture is the interesting product decision. It ships as a single offline file, but the data model (a portable world-JSON) is designed as a contract that can grow into a real app. The UI is decoupled from that contract and covered by jsdom tests, so I can rebuild the interface later without invalidating anyone's saved worlds. It's a small tool built with a big tool's data discipline.",
-      gallery: [],
+      gallery: [
+        "assets/screens/storyframe/02-dashboard.webp",
+        "assets/screens/storyframe/03-wizard-lesson.webp",
+        "assets/screens/storyframe/04-character-card.webp",
+        "assets/screens/storyframe/05-setting-card.webp",
+        "assets/screens/storyframe/06-framework-walk.webp",
+        "assets/screens/storyframe/07-framework-summary.webp"
+      ],
       metrics: [
         { label: "Backend", value: "None (offline)" },
         { label: "Data contract", value: "Portable JSON" },
@@ -215,8 +235,8 @@ export const projects = [
     tags: ["tooling", "shipped"],
     featured: false,
 
-    screenshot: "assets/support-rag-assistant.png",
-    screenshotAlt: "Support RAG Assistant drafting a reply in the house voice",
+    screenshot: "",   // internal WhatConverts project — no public screenshots (renders placeholder)
+    screenshotAlt: "Support RAG Assistant",
 
     link: {
       type: "none",
@@ -258,8 +278,8 @@ export const projects = [
     tags: ["game", "product"],
     featured: false,
 
-    screenshot: "assets/cobbies.png",
-    screenshotAlt: "Cobbies pixel-art creatures and collection screen",
+    screenshot: "assets/screens/cobbies/01-title.webp",
+    screenshotAlt: "Cobbies — title screen",
 
     link: {
       type: "demo",
@@ -287,7 +307,16 @@ export const projects = [
     detail: {
       body:
         "Cobbies is a scope-discipline story disguised as a cute creature-collector. Collector games are famous for ballooning, so I locked the pillars up front — a two-currency economy, five starters, a guided tutorial — and treated those as fixed constraints rather than open questions. That decision is the reason a prototype exists at all.\n\nThe result is a working core loop with a pixel-art showcase, architected so state and content are separable and the whole thing is ready for a proper production handoff. It's a small game that demonstrates a big habit: decide the shape early, then execute inside it.",
-      gallery: [],
+      gallery: [
+        "assets/screens/cobbies/02-welcome.webp",
+        "assets/screens/cobbies/03-ranch.webp",
+        "assets/screens/cobbies/04-minigame-hub.webp",
+        "assets/screens/cobbies/05-choose-runner.webp",
+        "assets/screens/cobbies/06-run-results.webp",
+        "assets/screens/cobbies/07-the-barn.webp",
+        "assets/screens/cobbies/08-shop.webp",
+        "assets/screens/cobbies/09-hatchery.webp"
+      ],
       metrics: [
         { label: "Economy", value: "Two-currency" },
         { label: "Starters", value: "5" },

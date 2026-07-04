@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js";
+import { projects } from "./projects.js?v=3";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -91,7 +91,6 @@ function cardHTML(project) {
 
         <!-- Product face -->
         <div class="face face--product">
-          <div class="shot">${shotHTML(project)}</div>
           <div class="body">
             <span class="kicker">Product</span>
             <h3>${esc(project.name)}</h3>
@@ -249,14 +248,19 @@ function modalHTML(project) {
     )
     .join("");
 
-  const heroShot = project.screenshot
-    ? `<img src="${esc(project.screenshot)}" alt="${esc(project.screenshotAlt || project.name)}"
-           loading="lazy" width="1600" height="800"
-           onerror="this.replaceWith(makePlaceholder('${esc(project.name)}'))" />`
-    : placeholderMarkup(project.name);
+  // media: hero screenshot + gallery, aspect-preserving; placeholder when image-less
+  const galleryImgs = [project.screenshot, ...(d.gallery || [])].filter(Boolean);
+  const media = galleryImgs.length
+    ? `<div class="modal-gallery">${galleryImgs.map((src, i) => `
+        <a href="${esc(src)}" target="_blank" rel="noopener noreferrer"
+           aria-label="View ${esc(project.name)} screenshot ${i + 1} at full size">
+          <img src="${esc(src)}"
+               alt="${esc(project.screenshotAlt || project.name)} — screenshot ${i + 1}" />
+        </a>`).join("")}</div>`
+    : `<div class="modal-hero">${placeholderMarkup(project.name)}</div>`;
 
   return `
-    <div class="modal-hero">${heroShot}</div>
+    ${media}
     <div class="modal-body">
       <span class="modal-eyebrow">Project</span>
       <h2 id="modal-title">${esc(project.name)}</h2>
@@ -303,12 +307,38 @@ function openModal(id, trigger) {
   document.addEventListener("keydown", onModalKeydown);
 }
 
+/* résumé viewer — reuses the modal shell (focus trap, Esc, click-out, restore) */
+function resumeHTML() {
+  const pdf = "assets/kit-cabena-resume.pdf";
+  return `
+    <div class="modal-body">
+      <span class="modal-eyebrow">Résumé</span>
+      <h2 id="modal-title">Kit Cabena — Résumé</h2>
+      <div class="resume-frame">
+        <iframe src="${pdf}#view=FitH" title="Kit Cabena résumé (PDF)" loading="lazy"></iframe>
+      </div>
+      <div class="modal-links">
+        <a class="btn btn--primary" href="${pdf}" download>Download PDF ↓</a>
+        <a class="btn btn--ghost" href="${pdf}" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+      </div>
+    </div>`;
+}
+function openResumeModal(trigger) {
+  lastFocused = trigger || document.activeElement;
+  modalContent.innerHTML = resumeHTML();
+  modalRoot.hidden = false;
+  document.body.classList.add("modal-open");
+  history.replaceState(null, "", "#resume");
+  modalDialog.focus();
+  document.addEventListener("keydown", onModalKeydown);
+}
+
 function closeModal() {
   if (modalRoot.hidden) return;
   modalRoot.hidden = true;
   document.body.classList.remove("modal-open");
   document.removeEventListener("keydown", onModalKeydown);
-  if (location.hash.startsWith("#project/")) history.replaceState(null, "", location.pathname + location.search);
+  if (location.hash.startsWith("#project/") || location.hash === "#resume") history.replaceState(null, "", location.pathname + location.search);
   if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
   lastFocused = null;
 }
@@ -371,6 +401,10 @@ function wireEvents() {
     // real smart-links inside a card should navigate, not open the modal
     if (e.target.closest("[data-stop]")) { e.stopPropagation(); return; }
 
+    // résumé viewer trigger (hero / contact / footer)
+    const resumeBtn = e.target.closest("[data-resume]");
+    if (resumeBtn) { e.preventDefault(); openResumeModal(resumeBtn); return; }
+
     // "Now building" card → open modal
     const nowCard = e.target.closest("[data-open]");
     if (nowCard) { openModal(nowCard.dataset.open, nowCard); return; }
@@ -432,6 +466,7 @@ function applyIdentityLinks() {
 
 /* ── open a modal if the URL is a deep-link on load ────────────────────── */
 function openFromHash() {
+  if (location.hash === "#resume") { openResumeModal(null); return; }
   const m = location.hash.match(/^#project\/(.+)$/);
   if (m) openModal(decodeURIComponent(m[1]), null);
 }

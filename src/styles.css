@@ -127,9 +127,11 @@ img { max-width: 100%; display: block; }
 }
 .hero-eyebrow span { color: var(--tech); padding-inline: 4px; }
 .hero-title { font-size: clamp(2.6rem, 7.5vw, 5.2rem); font-weight: 700; max-width: 15ch; }
+/* "two ways" — a hard 50/50 split: left half amber (product), right half cyan (technical) */
 .grad-product {
-  background: linear-gradient(100deg, var(--product-bright), var(--product) 45%, var(--tech) 118%);
+  background: linear-gradient(90deg, var(--product) 0%, var(--product) 50%, var(--tech) 50%, var(--tech) 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
+  white-space: nowrap;
 }
 .hero-lede { margin-top: 26px; max-width: 62ch; font-size: clamp(1.05rem, 1.6vw, 1.28rem); color: var(--fog-300); }
 .ink-product { color: var(--product-bright); }
@@ -220,7 +222,7 @@ section { scroll-margin-top: 84px; }
 .filter-btn .count { opacity: 0.6; margin-left: 6px; }
 
 /* ── Grid ──────────────────────────────────────────────────────────────── */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; align-items: start; }
 @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
 .grid-empty { text-align: center; color: var(--fog-500); padding: 40px 0; font-family: var(--font-mono); }
 
@@ -238,23 +240,26 @@ section { scroll-margin-top: 84px; }
 .card {
   position: relative;
   perspective: 1600px;
-  aspect-ratio: 320 / 400;
   cursor: pointer;
 }
+/* Faces are grid-stacked into a single cell, so the card auto-sizes to the
+   taller face — no fixed aspect ratio, no clipped content on hover. */
 .card-inner {
-  position: absolute; inset: 0;
+  position: relative;
+  display: grid;
   transform-style: preserve-3d;
   transition: transform 0.7s var(--flip-ease);
 }
 .card.flipped .card-inner { transform: rotateY(180deg); }
 
 .face {
-  position: absolute; inset: 0;
+  grid-area: 1 / 1;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: var(--radius); overflow: hidden;
   border: 1px solid var(--hair);
   display: flex; flex-direction: column;
   box-shadow: var(--shadow-card);
+  min-height: 0;
 }
 
 /* --- Product face: warm, amber, human --- */
@@ -263,11 +268,7 @@ section { scroll-margin-top: 84px; }
 }
 .card:hover .face--product { border-color: color-mix(in srgb, var(--product) 55%, var(--hair)); }
 
-.face--product .shot {
-  position: relative; aspect-ratio: 16 / 10; width: 100%; flex: none;
-  background: var(--ink-900); overflow: hidden;
-}
-.face--product .shot img { width: 100%; height: 100%; object-fit: cover; }
+/* (Card faces are text-first now; screenshots live in the project modal gallery.) */
 .shot-placeholder {
   position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
   background:
@@ -280,13 +281,13 @@ section { scroll-margin-top: 84px; }
 }
 .shot-placeholder small { display:block; font-family: var(--font-mono); font-size: 10px; color: var(--fog-700); margin-top: 6px; letter-spacing: 0.08em; text-transform: uppercase; }
 
-.face--product .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; }
+.face--product .body { padding: 24px 24px 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; min-height: 0; }
 .face--product .kicker { font-family: var(--font-mono); font-size: 11px; color: var(--product); letter-spacing: 0.05em; text-transform: uppercase; }
-.face--product h3 { font-size: 1.35rem; }
-.face--product .role { font-size: 13px; color: var(--fog-500); margin-top: -4px; }
-.pdo { display: flex; flex-direction: column; gap: 7px; margin-top: 2px; overflow: hidden; }
-.pdo-row { font-size: 13px; line-height: 1.5; color: var(--fog-300); }
-.pdo-row b { display: inline-block; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--product); margin-right: 6px; }
+.face--product h3 { font-size: 1.45rem; }
+.face--product .role { font-size: 13.5px; color: var(--fog-500); margin-top: -6px; }
+.pdo { display: flex; flex-direction: column; gap: 15px; margin-top: 4px; }
+.pdo-row { font-size: 13.5px; line-height: 1.58; color: var(--fog-300); }
+.pdo-row b { display: block; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--product); margin-bottom: 4px; }
 
 /* --- Technical face: cool, cyan, mono --- */
 .face--tech {
@@ -301,7 +302,7 @@ section { scroll-margin-top: 84px; }
   background-size: 100% 26px; opacity: 0.25; mask-image: linear-gradient(180deg, transparent, #000 40%);
 }
 .card:hover .face--tech { border-color: color-mix(in srgb, var(--tech) 55%, var(--hair)); }
-.face--tech .body { padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; position: relative; }
+.face--tech .body { padding: 24px; display: flex; flex-direction: column; gap: 15px; flex: 1; position: relative; }
 .face--tech .kicker { font-size: 11px; color: var(--tech); letter-spacing: 0.08em; text-transform: uppercase; }
 .face--tech h3 { font-family: var(--font-mono); font-weight: 700; font-size: 1.2rem; color: var(--tech-bright); letter-spacing: -0.01em; }
 .face--tech .tech-label { font-size: 10px; color: var(--fog-700); text-transform: uppercase; letter-spacing: 0.1em; }
@@ -364,6 +365,7 @@ section { scroll-margin-top: 84px; }
   display: flex; flex-direction: column; gap: 2px; align-items: center;
   border: 1px solid var(--hair); border-radius: 11px; padding: 12px 22px; min-width: 120px;
   background: var(--ink-850); transition: transform 0.18s var(--ease), border-color 0.18s var(--ease);
+  cursor: pointer; font: inherit; color: inherit;
 }
 .contact-link:hover { transform: translateY(-2px); border-color: var(--tech); }
 .contact-link-label { font-family: var(--font-display); font-weight: 600; color: var(--fog-100); }
@@ -374,8 +376,8 @@ section { scroll-margin-top: 84px; }
 .footer-inner { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: center; justify-content: space-between; }
 .footer-thesis { font-family: var(--font-display); color: var(--fog-100); font-weight: 500; }
 .footer-links { display: flex; gap: 18px; }
-.footer-links a { font-size: 14px; color: var(--fog-500); }
-.footer-links a:hover { color: var(--fog-100); }
+.footer-links a, .footer-links button { font-size: 14px; color: var(--fog-500); background: none; border: 0; font-family: inherit; cursor: pointer; padding: 0; }
+.footer-links a:hover, .footer-links button:hover { color: var(--fog-100); }
 .footer-fine { flex-basis: 100%; font-size: 12px; color: var(--fog-700); font-family: var(--font-mono); }
 
 /* =============================================================================
@@ -405,6 +407,28 @@ section { scroll-margin-top: 84px; }
 .modal-hero { position: relative; aspect-ratio: 16 / 8; background: var(--ink-900); overflow: hidden; border-bottom: 1px solid var(--hair); }
 .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
 .modal-hero .shot-placeholder span { font-size: 2rem; }
+
+/* modal media gallery — aspect-preserving horizontal strip, nothing cropped */
+.modal-gallery {
+  display: flex; gap: 12px; overflow-x: auto; padding: 16px;
+  background: var(--ink-900); border-bottom: 1px solid var(--hair);
+  scrollbar-width: thin; scroll-snap-type: x proximity;
+}
+.modal-gallery a {
+  flex: none; scroll-snap-align: start; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--hair); background: #000; line-height: 0;
+  transition: border-color 0.16s var(--ease);
+}
+.modal-gallery a:hover { border-color: var(--tech); }
+.modal-gallery img { height: 300px; width: auto; max-width: none; display: block; object-fit: contain; }
+@media (max-width: 640px) { .modal-gallery img { height: 220px; } }
+
+/* résumé viewer (embedded PDF) */
+.resume-frame {
+  border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden;
+  background: #2a2f37; height: min(72vh, 900px); margin-top: 18px;
+}
+.resume-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 
 .modal-body { padding: clamp(20px, 4vw, 36px); }
 .modal-eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--tech); text-transform: uppercase; letter-spacing: 0.06em; }

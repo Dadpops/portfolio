@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="src/styles.css?v=2" />
+  <link rel="stylesheet" href="src/styles.css?v=3" />
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
@@ -86,9 +86,7 @@
 
       <div class="hero-cta">
         <a class="btn btn--primary" href="#work">See the work</a>
-        <a class="btn btn--ghost" href="assets/kit-cabena-resume.pdf" download>
-          Download résumé <span aria-hidden="true">↓</span>
-        </a>
+        <button class="btn btn--ghost" type="button" data-resume>Résumé</button>
       </div>
     </section>
 
@@ -177,10 +175,10 @@
             <span class="contact-link-label">LinkedIn</span>
             <span class="contact-link-hint" data-ask-hint>link TBD</span>
           </a>
-          <a class="contact-link" href="assets/kit-cabena-resume.pdf" download>
+          <button class="contact-link" type="button" data-resume>
             <span class="contact-link-label">Résumé</span>
-            <span class="contact-link-hint">PDF ↓</span>
-          </a>
+            <span class="contact-link-hint">view + download</span>
+          </button>
         </div>
       </div>
     </section>
@@ -194,7 +192,7 @@
         <a href="mailto:dadpopsdev@gmail.com">Email</a>
         <a id="foot-github" href="#" target="_blank" rel="noopener noreferrer" data-ask="github">GitHub</a>
         <a id="foot-linkedin" href="#" target="_blank" rel="noopener noreferrer" data-ask="linkedin">LinkedIn</a>
-        <a href="assets/kit-cabena-resume.pdf" download>Résumé</a>
+        <button type="button" data-resume>Résumé</button>
       </nav>
       <p class="footer-fine">© <span id="year">2026</span> Kit Cabena · Built as a data-driven, one-commit-to-update site.</p>
     </div>
@@ -211,6 +209,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=2"></script>
+  <script type="module" src="src/app.js?v=3"></script>
 </body>
 </html>
