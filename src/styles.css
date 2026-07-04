@@ -268,7 +268,12 @@ section { scroll-margin-top: 84px; }
 }
 .card:hover .face--product { border-color: color-mix(in srgb, var(--product) 55%, var(--hair)); }
 
-/* (Card faces are text-first now; screenshots live in the project modal gallery.) */
+/* card screenshot: 16:10 cover at the top of the product face; full gallery is in the modal */
+.face--product .shot {
+  position: relative; aspect-ratio: 16 / 10; width: 100%; flex: none;
+  background: var(--ink-900); overflow: hidden; border-bottom: 1px solid var(--hair-soft);
+}
+.face--product .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .shot-placeholder {
   position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
   background:

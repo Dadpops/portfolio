@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js?v=3";
+import { projects } from "./projects.js?v=4";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -61,7 +61,7 @@ function shotHTML(project) {
   if (project.screenshot) {
     return `<img src="${esc(project.screenshot)}"
                  alt="${esc(project.screenshotAlt || project.name + " screenshot")}"
-                 loading="lazy" width="1600" height="1000"
+                 width="1600" height="1000"
                  onerror="this.replaceWith(makePlaceholder('${esc(project.name)}'))" />`;
   }
   return placeholderMarkup(project.name);
@@ -91,6 +91,7 @@ function cardHTML(project) {
 
         <!-- Product face -->
         <div class="face face--product">
+          <div class="shot">${shotHTML(project)}</div>
           <div class="body">
             <span class="kicker">Product</span>
             <h3>${esc(project.name)}</h3>
