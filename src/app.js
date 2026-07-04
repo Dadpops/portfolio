@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js?v=5";
+import { projects } from "./projects.js?v=6";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);

@@ -92,8 +92,8 @@ export const projects = [
     tags: ["tooling", "shipped", "product"],
     featured: false,
 
-    screenshot: "",   // internal WhatConverts project, no public screenshots (renders placeholder)
-    screenshotAlt: "Help Center Pipeline",
+    screenshot: "assets/screens/help-center/pipeline.webp",   // illustrative concept mockup (internal tool, no public UI)
+    screenshotAlt: "Help Center Pipeline concept: ticket data to AI draft to human review to published",
 
     link: {
       type: "none",
@@ -189,9 +189,11 @@ export const projects = [
     screenshotAlt: "Storyframe Studio, worlds overview",
 
     link: {
-      type: "repo",
-      url: "" // TODO: paste the Storyframe repo URL here once it's pushed; the "View source ↗" button then appears automatically
+      type: "demo",
+      url: "https://dadpops.github.io/storyframe-studio/"
     },
+    // source shown as a secondary link, in the modal only:
+    link2: { type: "repo", url: "https://github.com/Dadpops/storyframe-studio" },
 
     product: {
       problem:
@@ -235,8 +237,8 @@ export const projects = [
     tags: ["tooling", "shipped"],
     featured: false,
 
-    screenshot: "",   // internal WhatConverts project, no public screenshots (renders placeholder)
-    screenshotAlt: "Support RAG Assistant",
+    screenshot: "assets/screens/rag/assistant.webp",   // illustrative concept mockup (internal tool, no public UI)
+    screenshotAlt: "Support RAG Assistant concept: retrieved precedents and a voice-matched draft reply",
 
     link: {
       type: "none",
@@ -278,8 +280,8 @@ export const projects = [
     tags: ["game", "product"],
     featured: false,
 
-    screenshot: "assets/screens/cobbies/01-title.webp",
-    screenshotAlt: "Cobbies, title screen",
+    screenshot: "assets/screens/cobbies/logo-card.webp",
+    screenshotAlt: "Cobbies, logo and title art",
 
     link: {
       type: "demo",
