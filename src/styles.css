@@ -127,31 +127,31 @@ main {
 .demo-card { width: 100%; max-width: 430px; }
 .demo-card .demo-hint { font-family: var(--font-mono); font-size: 11px; color: var(--fog-500); }
 
-/* ── Cute critters + playful motion ────────────────────────────────────── */
-.critter { display: inline-flex; align-items: center; }
-.critter--cyan { color: var(--tech); }
-.critter--amber { color: var(--product); }
-.critter-svg { animation: critter-bob 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
-.critter--amber .critter-svg { animation-delay: 0.7s; }
-.critter-eyes { animation: critter-blink 5s step-end infinite; transform-box: fill-box; transform-origin: 50% 50%; }
-.critter--amber .critter-eyes { animation-delay: 1.4s; }
-@keyframes critter-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(-4deg); } }
-@keyframes critter-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
-
-/* gentle float on the interactive demo card; pauses when you reach to click it */
+/* ── Playful motion + Cobbies dog mascot ───────────────────────────────── */
 .demo-card { animation: demo-float 5.5s ease-in-out infinite; }
 .demo-card:hover, .demo-card:focus-visible { animation-play-state: paused; }
 @keyframes demo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-/* logo mark gives a little wag on hover */
+.logo { position: relative; }
 .logo:hover .logo-mark { animation: logo-wiggle 0.5s ease; }
 @keyframes logo-wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
 
-/* keep it smooth: pause all decorative motion while a modal is open */
+.work { position: relative; }
+.peek-dog {
+  position: absolute; pointer-events: none; z-index: 4; height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 5px 9px rgba(0, 0, 0, 0.5));
+  animation: dog-bob 3.2s ease-in-out infinite;
+}
+.peek-dog--logo { width: 30px; left: 100%; margin-left: 10px; bottom: -2px; }
+.peek-dog--work { width: 78px; top: 50px; right: 22px; animation-duration: 3.8s; }
+@keyframes dog-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(-3deg); } }
+@media (max-width: 640px) { .peek-dog--logo, .peek-dog--work { display: none; } }
+
+/* keep it smooth: pause decorative motion while a modal is open */
 body.modal-open .showcase-track,
-body.modal-open .critter-svg,
-body.modal-open .critter-eyes,
-body.modal-open .demo-card { animation-play-state: paused; }
+body.modal-open .demo-card,
+body.modal-open .peek-dog { animation-play-state: paused; }
 
 /* accessible focus — visible for keyboard users */
 :focus-visible {
@@ -311,28 +311,49 @@ section { scroll-margin-top: 84px; }
  * =========================================================================== */
 .card {
   position: relative;
-  perspective: 1600px;
   cursor: pointer;
 }
-/* Faces are grid-stacked into a single cell, so the card auto-sizes to the
-   taller face — no fixed aspect ratio, no clipped content on hover. */
+/* Faces are grid-stacked into one cell (card auto-sizes to the taller face);
+   the top bar "turns the page" by sliding one face out and the other in. */
 .card-inner {
   position: relative;
   display: grid;
-  transform-style: preserve-3d;
-  transition: transform 0.7s var(--flip-ease);
+  overflow: hidden;
+  border-radius: var(--radius);
 }
-.card.flipped .card-inner { transform: rotateY(180deg); }
-
 .face {
   grid-area: 1 / 1;
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: var(--radius); overflow: hidden;
   border: 1px solid var(--hair);
   display: flex; flex-direction: column;
   box-shadow: var(--shadow-card);
   min-height: 0;
+  transition: transform 0.55s var(--flip-ease);
 }
+.face--product { transform: translateX(0);    z-index: 2; }
+.face--tech    { transform: translateX(101%); z-index: 1; }
+.card.flipped .face--product { transform: translateX(-101%); z-index: 1; }
+.card.flipped .face--tech    { transform: translateX(0);     z-index: 2; }
+
+/* top control bar: Product | Technical | flip */
+.card-tabs { display: flex; align-items: stretch; height: 34px; flex: none; border-bottom: 1px solid var(--hair); }
+.tab {
+  flex: 1; border: 0; cursor: pointer; padding: 0;
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), filter 0.2s var(--ease);
+}
+.tab--product { color: var(--product); background: color-mix(in srgb, var(--product) 13%, transparent); border-right: 1px solid var(--hair); }
+.tab--tech    { color: var(--tech);    background: color-mix(in srgb, var(--tech) 13%, transparent); }
+.tab--product.is-active { background: var(--product); color: #1a1206; }
+.tab--tech.is-active    { background: var(--tech);    color: #06201e; }
+.tab:not(.is-active):hover { filter: brightness(1.5); }
+.tab-flip {
+  flex: none; width: 40px; border: 0; border-left: 1px solid var(--hair);
+  background: var(--ink-850); color: var(--fog-500); cursor: pointer; font-size: 15px;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.tab-flip:hover { color: var(--fog-100); background: var(--surface); }
 
 /* --- Product face: warm, amber, human --- */
 .face--product {
@@ -368,7 +389,6 @@ section { scroll-margin-top: 84px; }
 
 /* --- Technical face: cool, cyan, mono --- */
 .face--tech {
-  transform: rotateY(180deg);
   background:
     linear-gradient(180deg, #0b1418 0%, #0a1013 100%);
   font-family: var(--font-mono);
@@ -559,8 +579,6 @@ body.modal-open { overflow: hidden; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .card-inner { transition: none; }
-  .card.flipped .card-inner { transform: rotateY(180deg); }
   .reveal { opacity: 1; transform: none; }
   .pulse { box-shadow: 0 0 0 3px var(--tech-glow); }
 }

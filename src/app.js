@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js?v=6";
+import { projects } from "./projects.js?v=9";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -77,23 +77,35 @@ window.makePlaceholder = function (name) {
   return div;
 };
 
-/* ── a full flip card ──────────────────────────────────────────────────── */
+/* the two-tone control bar at the top of every card */
+function tabsHTML(active) {
+  return `
+        <div class="card-tabs">
+          <button class="tab tab--product${active === "product" ? " is-active" : ""}" type="button" data-face="product">Product</button>
+          <button class="tab tab--tech${active === "tech" ? " is-active" : ""}" type="button" data-face="tech">Technical</button>
+          <button class="tab-flip" type="button" data-flip aria-label="Switch reading"><span aria-hidden="true">⇄</span></button>
+        </div>`;
+}
+
+/* ── a full project card (product / technical, swapped via the top bar) ──── */
 function cardHTML(project) {
   const p = project.product || {};
   const t = project.tech || {};
   const stack = (t.stack || []).map((s) => `<span class="chip">${esc(s)}</span>`).join("");
+  const link = smartLinkHTML(project);
+  const foot = link ? `<div class="face-foot">${link}</div>` : "";
 
   return `
   <div class="card-item reveal" data-id="${esc(project.id)}" data-tags="${esc((project.tags || []).join(" "))}">
     <article class="card" tabindex="0" role="button"
-             aria-label="${esc(project.name)} — open details">
+             aria-label="${esc(project.name)}, open details">
       <div class="card-inner">
 
         <!-- Product face -->
         <div class="face face--product">
+          ${tabsHTML("product")}
           <div class="shot">${shotHTML(project)}</div>
           <div class="body">
-            <span class="kicker">Product</span>
             <h3>${esc(project.name)}</h3>
             ${project.role ? `<p class="role">${esc(project.role)}</p>` : ""}
             <div class="pdo">
@@ -101,29 +113,19 @@ function cardHTML(project) {
               ${p.decision ? `<p class="pdo-row"><b>Decision</b>${esc(p.decision)}</p>` : ""}
               ${p.outcome ? `<p class="pdo-row"><b>Outcome</b>${esc(p.outcome)}</p>` : ""}
             </div>
-            <div class="face-foot">
-              ${smartLinkHTML(project)}
-              <button class="flip-btn" type="button" data-flip aria-label="Flip to technical view">
-                <span class="g" aria-hidden="true">⇄</span> Technical
-              </button>
-            </div>
+            ${foot}
           </div>
         </div>
 
         <!-- Technical face -->
         <div class="face face--tech">
+          ${tabsHTML("tech")}
           <div class="body">
-            <span class="kicker">// technical build</span>
             <h3>${esc(project.name)}</h3>
             ${t.arch ? `<div><div class="tech-label">architecture</div><p class="tech-block">${esc(t.arch)}</p></div>` : ""}
             ${stack ? `<div><div class="tech-label">stack</div><div class="stackline">${stack}</div></div>` : ""}
             ${t.calls ? `<div><div class="tech-label">hard calls</div><p class="calls">${esc(t.calls)}</p></div>` : ""}
-            <div class="face-foot">
-              ${smartLinkHTML(project)}
-              <button class="flip-btn" type="button" data-flip aria-label="Flip to product view">
-                <span class="g" aria-hidden="true">⇄</span> Product
-              </button>
-            </div>
+            ${foot}
           </div>
         </div>
 
@@ -211,9 +213,6 @@ function applyFilter(filter) {
 /* ── flip ──────────────────────────────────────────────────────────────── */
 function flipCard(card) {
   card.classList.toggle("flipped");
-  const flipped = card.classList.contains("flipped");
-  // keep assistive tech honest about which face is up
-  $$(".flip-btn", card).forEach((b) => (b.setAttribute("aria-pressed", String(flipped))));
 }
 
 /* =============================================================================
@@ -270,8 +269,8 @@ function modalHTML(project) {
     ? `<div class="modal-gallery">${galleryImgs.map((src, i) => `
         <a href="${esc(src)}" target="_blank" rel="noopener noreferrer"
            aria-label="View ${esc(project.name)} screenshot ${i + 1} at full size">
-          <img src="${esc(src)}"
-               alt="${esc(project.screenshotAlt || project.name)} — screenshot ${i + 1}" />
+          <img src="${esc(src)}" ${i === 0 ? 'loading="eager"' : 'loading="lazy"'} decoding="async"
+               alt="${esc(project.screenshotAlt || project.name)} screenshot ${i + 1}" />
         </a>`).join("")}</div>`
     : `<div class="modal-hero">${placeholderMarkup(project.name)}</div>`;
 
@@ -412,6 +411,15 @@ function wireEvents() {
     if (flip) {
       e.stopPropagation();
       flipCard(flip.closest(".card"));
+      return;
+    }
+    // card tab (Product / Technical) → turn to that reading
+    const face = e.target.closest("[data-face]");
+    if (face) {
+      e.stopPropagation();
+      const card = face.closest(".card");
+      const wantTech = face.dataset.face === "tech";
+      if (card.classList.contains("flipped") !== wantTech) flipCard(card);
       return;
     }
     // real smart-links inside a card should navigate, not open the modal

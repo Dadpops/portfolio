@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="src/styles.css?v=8" />
+  <link rel="stylesheet" href="src/styles.css?v=9" />
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
@@ -39,6 +39,7 @@
       <a class="logo" href="#top" aria-label="Kit Cabena, home">
         <span class="logo-mark" aria-hidden="true">KC</span>
         <span class="logo-text">Kit Cabena</span>
+        <img class="peek-dog peek-dog--logo" src="assets/dog.webp" alt="" aria-hidden="true" />
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="#work">Work</a>
@@ -76,12 +77,16 @@
 
       <!-- Interactive tutorial: a real flip card you can try right here -->
       <div class="hero-demo">
-        <p class="hero-demo-label"><span class="flip-glyph" aria-hidden="true">⇄</span> Try it: flip this card</p>
-        <div class="card demo-card" tabindex="0" role="button" aria-label="Example card. Activate to flip between the product and technical reading.">
+        <p class="hero-demo-label"><span class="flip-glyph" aria-hidden="true">⇄</span> Try it: tap Product or Technical</p>
+        <div class="card demo-card" tabindex="0" role="button" aria-label="Example card. Activate to switch between the product and technical reading.">
           <div class="card-inner">
             <div class="face face--product">
+              <div class="card-tabs">
+                <button class="tab tab--product is-active" type="button" data-face="product">Product</button>
+                <button class="tab tab--tech" type="button" data-face="tech">Technical</button>
+                <button class="tab-flip" type="button" data-flip aria-label="Switch reading"><span aria-hidden="true">⇄</span></button>
+              </div>
               <div class="body">
-                <span class="kicker">Product</span>
                 <h3>Read it as a product story</h3>
                 <p class="role">For PMs &amp; recruiters</p>
                 <div class="pdo">
@@ -89,23 +94,21 @@
                   <p class="pdo-row"><b>Decision</b>The call I made, and why.</p>
                   <p class="pdo-row"><b>Outcome</b>What shipped, and what changed.</p>
                 </div>
-                <div class="face-foot">
-                  <span class="demo-hint">the human story</span>
-                  <button class="flip-btn" type="button" data-flip aria-label="Flip to the technical view"><span class="g" aria-hidden="true">⇄</span> Technical</button>
-                </div>
+                <div class="face-foot"><span class="demo-hint">the human story</span></div>
               </div>
             </div>
             <div class="face face--tech">
+              <div class="card-tabs">
+                <button class="tab tab--product" type="button" data-face="product">Product</button>
+                <button class="tab tab--tech is-active" type="button" data-face="tech">Technical</button>
+                <button class="tab-flip" type="button" data-flip aria-label="Switch reading"><span aria-hidden="true">⇄</span></button>
+              </div>
               <div class="body">
-                <span class="kicker">// technical build</span>
                 <h3>read it as a technical build</h3>
                 <div><div class="tech-label">architecture</div><p class="tech-block">How the system is put together, and where the interesting seams are.</p></div>
                 <div><div class="tech-label">stack</div><div class="stackline"><span class="chip">the real tools</span><span class="chip">no filler</span></div></div>
                 <div><div class="tech-label">hard calls</div><p class="calls">The tradeoffs I owned to actually ship it.</p></div>
-                <div class="face-foot">
-                  <span class="demo-hint">for engineers</span>
-                  <button class="flip-btn" type="button" data-flip aria-label="Flip to the product view"><span class="g" aria-hidden="true">⇄</span> Product</button>
-                </div>
+                <div class="face-foot"><span class="demo-hint">for engineers</span></div>
               </div>
             </div>
           </div>
@@ -116,8 +119,9 @@
 
     <!-- ── Selected work ────────────────────────────────────────────────── -->
     <section class="work wrap" id="work" aria-labelledby="work-heading">
+      <img class="peek-dog peek-dog--work" src="assets/dog.webp" alt="" aria-hidden="true" />
       <div class="section-head">
-        <h2 id="work-heading" class="section-title">The work <span class="critter critter--cyan" aria-hidden="true"><svg class="critter-svg" viewBox="0 0 40 40" width="30" height="30"><rect x="8" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="25" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="5" y="10" width="30" height="25" rx="11" fill="currentColor"/><g class="critter-eyes"><circle cx="15" cy="21" r="3.4" fill="#0a0e14"/><circle cx="25" cy="21" r="3.4" fill="#0a0e14"/><circle cx="16.2" cy="19.8" r="1.1" fill="#fff"/><circle cx="26.2" cy="19.8" r="1.1" fill="#fff"/></g><circle cx="10.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><circle cx="29.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><path d="M17.5 27.5 q2.5 2.2 5 0" stroke="#0a0e14" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span></h2>
+        <h2 id="work-heading" class="section-title">The work</h2>
         <p class="section-sub">
           Everything I've been building. Flip a card to switch audiences, or click one to open the full story: both layers, side by side.
         </p>
@@ -136,7 +140,7 @@
     <!-- ── About ────────────────────────────────────────────────────────── -->
     <section class="about wrap" id="about" aria-labelledby="about-heading">
       <div class="section-head">
-        <h2 id="about-heading" class="section-title">About <span class="critter critter--amber" aria-hidden="true"><svg class="critter-svg" viewBox="0 0 40 40" width="30" height="30"><rect x="8" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="25" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="5" y="10" width="30" height="25" rx="11" fill="currentColor"/><g class="critter-eyes"><circle cx="15" cy="21" r="3.4" fill="#0a0e14"/><circle cx="25" cy="21" r="3.4" fill="#0a0e14"/><circle cx="16.2" cy="19.8" r="1.1" fill="#fff"/><circle cx="26.2" cy="19.8" r="1.1" fill="#fff"/></g><circle cx="10.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><circle cx="29.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><path d="M17.5 27.5 q2.5 2.2 5 0" stroke="#0a0e14" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span></h2>
+        <h2 id="about-heading" class="section-title">About</h2>
       </div>
       <div class="about-body">
         <p class="about-lede">
@@ -144,14 +148,14 @@
           making something that takes a real problem off someone's plate.
         </p>
         <p>
-          I came up through the support-engineering trenches, which turns out to be the
-          best seat in the house for learning what's actually worth building. I got tired
-          of filing the same problems as tickets, so I started shipping the fixes myself:
-          internal tools, documentation pipelines, RAG assistants. That builder habit never
-          switched off. These days it's products and tools during the day, and games and
-          little creative worlds on nights and weekends. I run
+          I work at the seam between product and engineering, and I ship. I've built
+          internal tools, AI-assisted documentation pipelines, and RAG systems that moved
+          real numbers, alongside games and creative tools I make because I love the craft.
+          The technical depth is the whole advantage: I can scope a product, talk to
+          engineers in their language, and build the thing myself when that's what it takes.
+          It all lives under
           <a class="inline-link" href="https://www.linkedin.com/company/solutionskit/" target="_blank" rel="noopener noreferrer">SolutionsKit</a>,
-          my own studio, as the home for all of it.
+          my own studio.
         </p>
         <p>
           When I'm not at the keyboard I'm probably out on a mountain bike trail here in
@@ -167,7 +171,7 @@
     <!-- ── Contact ──────────────────────────────────────────────────────── -->
     <section class="contact wrap" id="contact" aria-labelledby="contact-heading">
       <div class="contact-card">
-        <h2 id="contact-heading" class="section-title">Let's talk <span class="critter critter--cyan" aria-hidden="true"><svg class="critter-svg" viewBox="0 0 40 40" width="30" height="30"><rect x="8" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="25" y="5" width="7" height="10" rx="2.5" fill="currentColor"/><rect x="5" y="10" width="30" height="25" rx="11" fill="currentColor"/><g class="critter-eyes"><circle cx="15" cy="21" r="3.4" fill="#0a0e14"/><circle cx="25" cy="21" r="3.4" fill="#0a0e14"/><circle cx="16.2" cy="19.8" r="1.1" fill="#fff"/><circle cx="26.2" cy="19.8" r="1.1" fill="#fff"/></g><circle cx="10.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><circle cx="29.5" cy="26.5" r="2.2" fill="#ff9db0" opacity="0.75"/><path d="M17.5 27.5 q2.5 2.2 5 0" stroke="#0a0e14" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span></h2>
+        <h2 id="contact-heading" class="section-title">Let's talk</h2>
         <p class="contact-lede">
           Want to build something, compare notes, or just say hi? Email is the fastest way
           to reach me. The rest is here if you want to dig deeper.
@@ -221,6 +225,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=6"></script>
+  <script type="module" src="src/app.js?v=9"></script>
 </body>
 </html>
