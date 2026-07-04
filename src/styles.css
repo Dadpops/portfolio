@@ -84,13 +84,15 @@ img { max-width: 100%; display: block; }
 /* ── Background showcase: two slow vertical screenshot carousels ────────── */
 .showcase { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .showcase-col {
-  position: absolute; top: 0; bottom: 0; width: clamp(130px, 15vw, 280px);
+  position: absolute; top: 0; bottom: 0; width: clamp(120px, 13vw, 240px);
   overflow: hidden; opacity: 0.15;
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
   mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
 }
-.showcase-col--left { left: 0; }
-.showcase-col--right { right: 0; }
+/* Sit just outside the content tray (half-width 590px) so they frame the work
+   instead of clinging to the far edges. */
+.showcase-col--left  { left: 50%; transform: translateX(calc(-100% - 590px - 20px)); }
+.showcase-col--right { left: 50%; transform: translateX(calc(590px + 20px)); }
 .showcase-track { display: flex; flex-direction: column; padding-inline: 8px; will-change: transform; }
 .showcase-track[data-track="up"]   { animation: showcase-up 80s linear infinite; }
 .showcase-track[data-track="down"] { animation: showcase-down 80s linear infinite; }
@@ -124,6 +126,32 @@ main {
 .hero-demo-note { font-size: 12.5px; color: var(--fog-700); font-family: var(--font-mono); }
 .demo-card { width: 100%; max-width: 430px; }
 .demo-card .demo-hint { font-family: var(--font-mono); font-size: 11px; color: var(--fog-500); }
+
+/* ── Cute critters + playful motion ────────────────────────────────────── */
+.critter { display: inline-flex; align-items: center; }
+.critter--cyan { color: var(--tech); }
+.critter--amber { color: var(--product); }
+.critter-svg { animation: critter-bob 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
+.critter--amber .critter-svg { animation-delay: 0.7s; }
+.critter-eyes { animation: critter-blink 5s step-end infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+.critter--amber .critter-eyes { animation-delay: 1.4s; }
+@keyframes critter-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(-4deg); } }
+@keyframes critter-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
+
+/* gentle float on the interactive demo card; pauses when you reach to click it */
+.demo-card { animation: demo-float 5.5s ease-in-out infinite; }
+.demo-card:hover, .demo-card:focus-visible { animation-play-state: paused; }
+@keyframes demo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* logo mark gives a little wag on hover */
+.logo:hover .logo-mark { animation: logo-wiggle 0.5s ease; }
+@keyframes logo-wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
+
+/* keep it smooth: pause all decorative motion while a modal is open */
+body.modal-open .showcase-track,
+body.modal-open .critter-svg,
+body.modal-open .critter-eyes,
+body.modal-open .demo-card { animation-play-state: paused; }
 
 /* accessible focus — visible for keyboard users */
 :focus-visible {
@@ -442,7 +470,7 @@ section { scroll-margin-top: 84px; }
 /* The author `display:grid` above would otherwise override the UA `[hidden]{display:none}`,
    leaving the backdrop covering the page at all times. Re-assert hidden (higher specificity). */
 .modal-root[hidden] { display: none; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(4,7,11,0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: fade 0.25s var(--ease); }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(4,7,11,0.82); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); animation: fade 0.25s var(--ease); }
 .modal {
   position: relative; z-index: 1; width: min(920px, 100%); max-height: 88vh; overflow-y: auto;
   background: linear-gradient(180deg, var(--surface), var(--ink-850));
