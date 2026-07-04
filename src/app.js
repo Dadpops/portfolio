@@ -5,7 +5,7 @@
  * from projects.js. No project content is hand-written in the HTML.
  * =========================================================================== */
 
-import { projects } from "./projects.js?v=4";
+import { projects } from "./projects.js?v=5";
 
 /* ── tiny helpers ──────────────────────────────────────────────────────── */
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -132,21 +132,36 @@ function cardHTML(project) {
   </div>`;
 }
 
-/* ── "Now building" strip (featured projects) ──────────────────────────── */
-function renderNow() {
-  const strip = $("#now-strip");
-  const featured = projects.filter((p) => p.featured);
-  const list = featured.length ? featured : projects.slice(0, 3);
-  strip.innerHTML = list
-    .map(
-      (p) => `
-      <button class="now-card" data-open="${esc(p.id)}" role="listitem">
-        <span class="now-tag">${esc((p.tags || [])[0] || "project")}</span>
-        <h3>${esc(p.name)}</h3>
-        <p>${esc(p.role || "")}</p>
-      </button>`
-    )
-    .join("");
+/* ── Background showcase: two slow vertical screenshot carousels ────────── */
+// Hand-picked, most-visual screenshots. Left track scrolls up, right scrolls down.
+const SHOWCASE = {
+  up: [
+    "assets/screens/cobbies/01-title.webp",
+    "assets/screens/rift/battle.webp",
+    "assets/screens/storyframe/04-character-card.webp",
+    "assets/screens/cobbies/07-the-barn.webp",
+    "assets/screens/shortpath/main.webp",
+    "assets/screens/rift/rift-cards.webp",
+    "assets/screens/cobbies/08-shop.webp"
+  ],
+  down: [
+    "assets/screens/storyframe/01-worlds.webp",
+    "assets/screens/cobbies/03-ranch.webp",
+    "assets/screens/rift/menu.webp",
+    "assets/screens/storyframe/05-setting-card.webp",
+    "assets/screens/cobbies/09-hatchery.webp",
+    "assets/screens/shortpath/search-results.webp",
+    "assets/screens/cobbies/04-minigame-hub.webp"
+  ]
+};
+function renderShowcase() {
+  $$(".showcase-track").forEach((track) => {
+    const imgs = SHOWCASE[track.dataset.track === "down" ? "down" : "up"] || [];
+    // duplicate the set so the -50% translate loop is seamless
+    track.innerHTML = [...imgs, ...imgs]
+      .map((src) => `<img src="${esc(src)}" alt="" aria-hidden="true" />`)
+      .join("");
+  });
 }
 
 /* ── grid + filters ────────────────────────────────────────────────────── */
@@ -406,9 +421,9 @@ function wireEvents() {
     const resumeBtn = e.target.closest("[data-resume]");
     if (resumeBtn) { e.preventDefault(); openResumeModal(resumeBtn); return; }
 
-    // "Now building" card → open modal
-    const nowCard = e.target.closest("[data-open]");
-    if (nowCard) { openModal(nowCard.dataset.open, nowCard); return; }
+    // interactive hero demo card → flip on click
+    const demo = e.target.closest(".demo-card");
+    if (demo) { flipCard(demo); return; }
 
     // project card body → open modal
     const card = e.target.closest(".card");
@@ -430,11 +445,11 @@ function wireEvents() {
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Enter" && e.key !== " ") return;
     const card = e.target.closest(".card");
-    if (card && e.target === card) {
-      e.preventDefault();
-      const id = card.closest(".card-item")?.dataset.id;
-      if (id) openModal(id, card);
-    }
+    if (!card || e.target !== card) return;
+    e.preventDefault();
+    if (card.classList.contains("demo-card")) { flipCard(card); return; }
+    const id = card.closest(".card-item")?.dataset.id;
+    if (id) openModal(id, card);
   });
 
   // wire the [ASK ME] identity links from a single config (kept in one place)
@@ -475,7 +490,7 @@ function openFromHash() {
 /* ── boot ──────────────────────────────────────────────────────────────── */
 function init() {
   $("#year").textContent = new Date().getFullYear();
-  renderNow();
+  renderShowcase();
   renderFilters();
   renderGrid();
   wireEvents();

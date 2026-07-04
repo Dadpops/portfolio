@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="src/styles.css?v=4" />
+  <link rel="stylesheet" href="src/styles.css?v=5" />
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
@@ -42,73 +42,84 @@
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="#work">Work</a>
-        <a href="#now">Building</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
 
+  <!-- Background: two slow vertical screenshot carousels (decorative), populated by app.js -->
+  <div class="showcase" aria-hidden="true">
+    <div class="showcase-col showcase-col--left"><div class="showcase-track" data-track="up"></div></div>
+    <div class="showcase-col showcase-col--right"><div class="showcase-track" data-track="down"></div></div>
+  </div>
+
   <main>
     <!-- ── Hero ─────────────────────────────────────────────────────────── -->
     <section class="hero wrap" id="hero">
-      <p class="hero-eyebrow">Builder <span aria-hidden="true">·</span> Product <span aria-hidden="true">·</span> Support engineering</p>
-      <h1 class="hero-title">
-        The work reads <span class="grad-product">two ways</span>.
-      </h1>
-      <p class="hero-lede">
-        I build at the seam between product and engineering, and so does this page.
-        Every project can be read as a <strong class="ink-product">Product story</strong>
-        (problem, decision, outcome) or flipped to the <strong class="ink-tech">Technical build</strong>
-        (architecture, stack, the hard calls). Same work, translated for whoever's reading.
-      </p>
-
-      <!-- Compact "how to read this" explainer -->
-      <div class="layer-explainer" role="note" aria-label="How to read the project cards">
-        <div class="layer-chip layer-chip--product">
-          <span class="dot" aria-hidden="true"></span>
-          <div>
-            <span class="layer-chip-title">Product</span>
-            <span class="layer-chip-sub">for PMs &amp; recruiters</span>
-          </div>
-        </div>
-        <button class="layer-explainer-flip" type="button" aria-hidden="true" tabindex="-1">
-          <span class="flip-glyph">⇄</span> flip any card
-        </button>
-        <div class="layer-chip layer-chip--tech">
-          <span class="dot" aria-hidden="true"></span>
-          <div>
-            <span class="layer-chip-title">Technical</span>
-            <span class="layer-chip-sub">for engineers</span>
-          </div>
+      <div class="hero-text">
+        <p class="hero-eyebrow">Builder <span aria-hidden="true">·</span> Product <span aria-hidden="true">·</span> Support engineering</p>
+        <h1 class="hero-title">
+          The work reads <span class="grad-product">two ways</span>.
+        </h1>
+        <p class="hero-lede">
+          I build at the seam between product and engineering, and so does this page.
+          Every project can be read as a <strong class="ink-product">Product story</strong>
+          (problem, decision, outcome) or flipped to the <strong class="ink-tech">Technical build</strong>
+          (architecture, stack, the hard calls). Same work, translated for whoever's reading.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn--primary" href="#work">See the work</a>
+          <button class="btn btn--ghost" type="button" data-resume>Résumé</button>
         </div>
       </div>
 
-      <div class="hero-cta">
-        <a class="btn btn--primary" href="#work">See the work</a>
-        <button class="btn btn--ghost" type="button" data-resume>Résumé</button>
-      </div>
-    </section>
-
-    <!-- ── Now building (live strip) ────────────────────────────────────── -->
-    <section class="now wrap" id="now" aria-labelledby="now-heading">
-      <div class="section-head">
-        <h2 id="now-heading" class="section-title">
-          <span class="pulse" aria-hidden="true"></span> Now building
-        </h2>
-        <p class="section-sub">Continuous output. A few things currently in motion.</p>
-      </div>
-      <div class="now-strip" id="now-strip" role="list">
-        <!-- rendered from projects.js (featured) -->
+      <!-- Interactive tutorial: a real flip card you can try right here -->
+      <div class="hero-demo">
+        <p class="hero-demo-label"><span class="flip-glyph" aria-hidden="true">⇄</span> Try it: flip this card</p>
+        <div class="card demo-card" tabindex="0" role="button" aria-label="Example card. Activate to flip between the product and technical reading.">
+          <div class="card-inner">
+            <div class="face face--product">
+              <div class="body">
+                <span class="kicker">Product</span>
+                <h3>Read it as a product story</h3>
+                <p class="role">For PMs &amp; recruiters</p>
+                <div class="pdo">
+                  <p class="pdo-row"><b>Problem</b>What did people actually struggle with?</p>
+                  <p class="pdo-row"><b>Decision</b>The call I made, and why.</p>
+                  <p class="pdo-row"><b>Outcome</b>What shipped, and what changed.</p>
+                </div>
+                <div class="face-foot">
+                  <span class="demo-hint">the human story</span>
+                  <button class="flip-btn" type="button" data-flip aria-label="Flip to the technical view"><span class="g" aria-hidden="true">⇄</span> Technical</button>
+                </div>
+              </div>
+            </div>
+            <div class="face face--tech">
+              <div class="body">
+                <span class="kicker">// technical build</span>
+                <h3>read it as a technical build</h3>
+                <div><div class="tech-label">architecture</div><p class="tech-block">How the system is put together, and where the interesting seams are.</p></div>
+                <div><div class="tech-label">stack</div><div class="stackline"><span class="chip">the real tools</span><span class="chip">no filler</span></div></div>
+                <div><div class="tech-label">hard calls</div><p class="calls">The tradeoffs I owned to actually ship it.</p></div>
+                <div class="face-foot">
+                  <span class="demo-hint">for engineers</span>
+                  <button class="flip-btn" type="button" data-flip aria-label="Flip to the product view"><span class="g" aria-hidden="true">⇄</span> Product</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="hero-demo-note">Every card below works exactly like this one.</p>
       </div>
     </section>
 
     <!-- ── Selected work ────────────────────────────────────────────────── -->
     <section class="work wrap" id="work" aria-labelledby="work-heading">
       <div class="section-head">
-        <h2 id="work-heading" class="section-title">Selected work</h2>
+        <h2 id="work-heading" class="section-title">The work</h2>
         <p class="section-sub">
-          Flip a card to switch audiences. Click a card to open the full story: both layers, side by side.
+          Everything I've been building. Flip a card to switch audiences, or click one to open the full story: both layers, side by side.
         </p>
       </div>
 
@@ -209,6 +220,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=4"></script>
+  <script type="module" src="src/app.js?v=5"></script>
 </body>
 </html>
